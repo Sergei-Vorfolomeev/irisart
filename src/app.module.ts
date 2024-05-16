@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import configuration, { AppConfigServiceType } from './configuration'
 import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { User } from './features/users/domain/user.entity'
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
         username: configService.get('db.username', { infer: true }),
         password: configService.get('db.password', { infer: true }),
         database: configService.get('db.name', { infer: true }),
-        entities: [],
+        entities: [User],
         synchronize: true,
       }),
       inject: [ConfigService],
