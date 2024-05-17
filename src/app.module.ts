@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import configuration, { AppConfigServiceType } from './configuration'
 import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from './features/users/domain/user.entity'
+import { User } from './features/users/entities/user.entity'
 
 @Module({
   imports: [
@@ -25,13 +25,14 @@ import { User } from './features/users/domain/user.entity'
         password: configService.get('db.password', { infer: true }),
         database: configService.get('db.name', { infer: true }),
         entities: [User],
+        autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UsersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
