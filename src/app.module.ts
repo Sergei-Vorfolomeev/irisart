@@ -6,6 +6,7 @@ import configuration, { AppConfigServiceType } from './configuration'
 import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from './features/users/entities/user.entity'
+import { Ban } from './features/users/entities/ban.entity'
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { User } from './features/users/entities/user.entity'
         username: configService.get('db.username', { infer: true }),
         password: configService.get('db.password', { infer: true }),
         database: configService.get('db.name', { infer: true }),
-        entities: [User],
+        entities: [User, Ban],
         autoLoadEntities: true,
         synchronize: true,
       }),

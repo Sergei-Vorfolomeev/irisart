@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { User } from '../../../entities/user.entity'
-import { BcryptAdapter } from '../../../../../base/adapters/bcrypt.adapter'
+import { User } from '../../entities/user.entity'
+import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { UserDBModel } from '../../types/user-db.model'
-import { UsersRepository } from '../../../infrastructure/users.repository'
+import { UsersRepository } from '../../repositories/users.repository'
 import {
   InterLayerObject,
   StatusCode,
-} from '../../../../../base/interlayer-object'
+} from '../../../../base/interlayer-object'
 import { Roles } from '../../types/roles.enum'
 
 export class CreateUserCommand {

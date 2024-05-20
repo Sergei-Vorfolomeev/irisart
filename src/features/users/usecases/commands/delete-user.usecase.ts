@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import {
   InterLayerObject,
   StatusCode,
-} from '../../../../../base/interlayer-object'
-import { UsersRepository } from '../../../infrastructure/users.repository'
+} from '../../../../base/interlayer-object'
+import { UsersRepository } from '../../repositories/users.repository'
 
 export class DeleteUserCommand {
   constructor(public userId: string) {}

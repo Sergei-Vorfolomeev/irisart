@@ -1,8 +1,8 @@
-import { IUsersRepository } from '../application/interfaces/users.repository.interface'
+import { IUsersRepository } from '../interfaces/users.repository.interface'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
-import { UserDBModel } from '../application/types/user-db.model'
+import { UserDBModel } from '../types/user-db.model'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
@@ -10,6 +10,15 @@ export class UsersRepository implements IUsersRepository {
   constructor(
     @InjectRepository(User) private readonly usersRepo: Repository<User>,
   ) {}
+
+  async getById(userId: string): Promise<User[]> {
+    try {
+      return this.usersRepo.findBy({ id: userId })
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
 
   async create(user: UserDBModel): Promise<User | null> {
     try {

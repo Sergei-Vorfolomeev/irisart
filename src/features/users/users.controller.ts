@@ -9,17 +9,31 @@ import {
 } from '@nestjs/common'
 import { UserInputModel } from './dto/user-input.model'
 import { CommandBus } from '@nestjs/cqrs'
-import { CreateUserCommand } from '../application/usecases/commands/create-user.usecase'
-import { DeleteUserCommand } from '../application/usecases/commands/delete-user.usecase'
-import { handleExceptions } from '../../../base/utils/handle-exceptions'
+import { CreateUserCommand } from './usecases/commands/create-user.usecase'
+import { DeleteUserCommand } from './usecases/commands/delete-user.usecase'
+import { handleExceptions } from '../../base/utils/handle-exceptions'
+import { UsersQueryRepository } from './repositories/users.query.repository'
 
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly usersQueryRepository: UsersQueryRepository,
+  ) {}
 
   @Get()
   async getAllUsers() {
-    return 'All users'
+    return await this.usersQueryRepository.getAll()
+  }
+
+  @Get('banned')
+  async getBannedUsers() {
+    return await this.usersQueryRepository.getBannedUsers()
+  }
+
+  @Get(':id')
+  async getById(@Param('id') userId: string) {
+    return await this.usersQueryRepository.getById(userId)
   }
 
   @Post()

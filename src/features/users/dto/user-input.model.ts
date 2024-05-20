@@ -1,4 +1,4 @@
-import { Roles } from '../../application/types/roles.enum'
+import { Roles } from '../types/roles.enum'
 
 export type UserInputModel = {
   login: string

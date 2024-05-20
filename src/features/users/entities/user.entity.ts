@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Roles } from '../application/types/roles.enum'
+import { Roles } from '../types/roles.enum'
 import { Ban } from './ban.entity'
 
 @Entity('users')
@@ -34,6 +34,5 @@ export class User {
   updatedAt: Date
 
   @OneToOne(() => Ban, (ban) => ban.userId, { onDelete: 'CASCADE' })
-  @JoinColumn()
   banInfo: Ban
 }

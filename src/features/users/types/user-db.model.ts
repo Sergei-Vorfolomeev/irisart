@@ -7,5 +7,10 @@ export type UserDBModel = {
   role: Roles
   createdAt?: Date
   updatedAt?: Date
-  isBanned?: boolean
+  banInfo?: Ban
+}
+
+export type Ban = {
+  status: boolean
+  bannedAt: Date
 }
