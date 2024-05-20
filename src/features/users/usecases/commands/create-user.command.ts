@@ -19,7 +19,9 @@ export class CreateUserCommand {
 }
 
 @CommandHandler(CreateUserCommand)
-export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
+export class CreateUserCommandHandler
+  implements ICommandHandler<CreateUserCommand>
+{
   constructor(
     private readonly bcryptAdapter: BcryptAdapter,
     private readonly usersRepository: UsersRepository,

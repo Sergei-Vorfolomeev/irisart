@@ -7,12 +7,12 @@ import { Injectable } from '@nestjs/common'
 @Injectable()
 export class UsersQueryRepository implements IUsersQueryRepository {
   constructor(
-    @InjectRepository(User) private readonly usersRepo: Repository<User>,
+    @InjectRepository(User) private readonly usersOrmRepo: Repository<User>,
   ) {}
 
   async getAll(): Promise<User[]> {
     try {
-      return this.usersRepo.query(`
+      return this.usersOrmRepo.query(`
       select * from users
       `)
     } catch (e) {
@@ -23,13 +23,14 @@ export class UsersQueryRepository implements IUsersQueryRepository {
 
   async getById(userId: string): Promise<User | null> {
     try {
-      return this.usersRepo.query(
+      const resInArray = this.usersOrmRepo.query(
         `
         select u.* from users as u
         where u.id = $1
         `,
         [userId],
       )
+      return resInArray[0]
 
       // const userInArray = await this.usersRepo.findOne({
       //   relations: ['id'],
@@ -53,12 +54,32 @@ export class UsersQueryRepository implements IUsersQueryRepository {
 
   async getBannedUsers(): Promise<User[] | null> {
     try {
-      return await this.usersRepo.query(`
-        select u.*, b."banStatus", b."banReason", b."bannedAt" from users as u
+      return await this.usersOrmRepo.query(`
+        select u.*, b."banStatus", b."banReason", b."bannedAt" 
+        from users as u
         left join bans as b
         on u.id = b."userId"
         where b."banStatus" = true
       `)
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async getBannedUserById(userId: string): Promise<User | null> {
+    try {
+      const resInArray = await this.usersOrmRepo.query(
+        `
+        select u.*, b."banStatus", b."banReason", b."bannedAt" 
+        from users as u
+        left join bans as b
+        on u.id = b."userId"
+        where u.id = $1
+      `,
+        [userId],
+      )
+      return resInArray[0]
     } catch (e) {
       console.error(e)
       return null

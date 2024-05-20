@@ -10,7 +10,9 @@ export class DeleteUserCommand {
 }
 
 @CommandHandler(DeleteUserCommand)
-export class DeleteUserUseCase implements ICommandHandler<DeleteUserCommand> {
+export class DeleteUserCommandHandler
+  implements ICommandHandler<DeleteUserCommand>
+{
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(command: DeleteUserCommand): Promise<InterLayerObject> {
