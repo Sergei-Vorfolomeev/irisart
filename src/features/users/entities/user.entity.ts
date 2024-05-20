@@ -2,14 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-
-export enum Roles {
-  user = 'user',
-  admin = 'admin',
-}
+import { Roles } from '../types/roles.enum'
+import { Ban } from './ban.entity'
 
 @Entity('users')
 export class User {
@@ -33,4 +32,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date
+
+  @OneToOne(() => Ban, (ban) => ban.userId, { onDelete: 'CASCADE' })
+  banInfo: Ban
 }
