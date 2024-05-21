@@ -1,30 +1,5 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  OneToOne,
-  PrimaryColumn,
-  Unique,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import { User } from './user.entity'
-
-// @Entity('bans')
-// export class Ban {
-//   @PrimaryColumn('uuid')
-//   @OneToOne(() => User, (user) => user.id)
-//   @JoinColumn()
-//   userId: string
-//
-//   @Column({ default: false })
-//   status: boolean
-//
-//   @Column({ nullable: true })
-//   reason: string
-//
-//   @Column({ nullable: true })
-//   bannedAt: Date
-// }
 
 @Entity('bans')
 export class Ban {

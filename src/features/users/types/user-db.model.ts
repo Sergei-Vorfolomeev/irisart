@@ -1,6 +1,7 @@
 import { Roles } from './roles.enum'
 
 export type UserDBModel = {
+  id?: string
   login: string
   email: string
   password: string

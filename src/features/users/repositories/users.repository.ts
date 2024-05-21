@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity'
 import { UserDBModel } from '../types/user-db.model'
 import { Injectable } from '@nestjs/common'
 import { Ban } from '../entities/ban.entity'
-import { BanDbModel } from '../types/ban-db.model'
+import { BanDBModel } from '../types/ban-db.model'
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -14,9 +14,19 @@ export class UsersRepository implements IUsersRepository {
     @InjectRepository(Ban) private readonly bansOrmRepo: Repository<Ban>,
   ) {}
 
-  async getById(userId: string): Promise<User[]> {
+  async getById(userId: string): Promise<User | null> {
     try {
-      return this.usersOrmRepo.findBy({ id: userId })
+      const userInArray = await this.usersOrmRepo.query(
+        `
+          select u.*, b."banStatus", b."banReason", b."bannedAt"    
+          from users as u
+          left join bans as b
+          on u.id = b."userId"
+          where u.id = $1
+        `,
+        [userId],
+      )
+      return userInArray[0]
     } catch (e) {
       console.error(e)
       return null
@@ -42,7 +52,7 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async banUser(ban: BanDbModel): Promise<Ban | null> {
+  async banUser(ban: BanDBModel): Promise<Ban | null> {
     try {
       return await this.bansOrmRepo.save(ban)
     } catch (e) {

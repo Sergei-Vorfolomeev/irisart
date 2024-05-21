@@ -1,8 +1,10 @@
 import { Roles } from '../types/roles.enum'
 
-export type UserInputModel = {
+export type UserViewModel = {
+  id: string
   login: string
   email: string
-  password: string
   role: Roles
+  banStatus: boolean
+  createdAt: Date
 }

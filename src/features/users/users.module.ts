@@ -16,6 +16,7 @@ import { GetUsersQueryHandler } from './usecases/queries/get-users.query'
 import { GetBannedUsersQueryHandler } from './usecases/queries/get-banned-users.query'
 import { GetBannedUserByIdQueryHandler } from './usecases/queries/get-banned-user-by-id.query'
 import { GetUserByIdQueryHandler } from './usecases/queries/get-user-by-id.query'
+import { Mapper } from '../../base/utils/mapper'
 
 const usersUseCases = [
   GetUsersQueryHandler,
@@ -36,6 +37,7 @@ const usersUseCases = [
     BcryptAdapter,
     UsersRepository,
     UsersQueryRepository,
+    Mapper,
   ],
   controllers: [UsersController],
   exports: [],

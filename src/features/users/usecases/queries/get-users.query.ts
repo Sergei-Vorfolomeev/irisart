@@ -7,6 +7,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { isLogLevelEnabled } from '@nestjs/common/services/utils'
+import { UserViewModel } from '../../dto/user-view.model'
 
 export class GetAllUsersQuery {
   constructor() {}
@@ -16,8 +17,7 @@ export class GetAllUsersQuery {
 export class GetUsersQueryHandler implements IQueryHandler {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(): Promise<InterLayerObject<User[]>> {
-    console.log(this.usersQueryRepository)
+  async execute(): Promise<InterLayerObject<UserViewModel[]>> {
     const users = await this.usersQueryRepository.getAll()
     if (!users) {
       return new InterLayerObject(
@@ -25,6 +25,6 @@ export class GetUsersQueryHandler implements IQueryHandler {
         'Ошибка получения всех пользователей',
       )
     }
-    return new InterLayerObject<User[]>(StatusCode.Success, null, users)
+    return new InterLayerObject(StatusCode.Success, null, users)
   }
 }
