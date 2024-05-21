@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { User } from '../../entities/user.entity'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { UserDBModel } from '../../types/user-db.model'
 import { UsersRepository } from '../../repositories/users.repository'
@@ -27,7 +26,7 @@ export class CreateUserCommandHandler
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async execute(command: CreateUserCommand): Promise<InterLayerObject<User>> {
+  async execute(command: CreateUserCommand): Promise<InterLayerObject<string>> {
     const { login, email, password, role } = command
     const hashedPassword = await this.bcryptAdapter.generateHash(password)
     if (!hashedPassword) {
@@ -49,6 +48,10 @@ export class CreateUserCommandHandler
         'Ошибка сохранения пользователя',
       )
     }
-    return new InterLayerObject(StatusCode.Created, null, createdUser)
+    return new InterLayerObject<string>(
+      StatusCode.Created,
+      null,
+      createdUser.id,
+    )
   }
 }

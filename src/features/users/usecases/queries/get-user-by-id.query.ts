@@ -4,7 +4,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { User } from '../../entities/user.entity'
+import { UserViewModel } from '../../dto/user-view.model'
 
 export class GetUserByIdQuery {
   constructor(public userId: string) {}
@@ -14,7 +14,9 @@ export class GetUserByIdQuery {
 export class GetUserByIdQueryHandler implements IQueryHandler {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(query: GetUserByIdQuery): Promise<InterLayerObject<User>> {
+  async execute(
+    query: GetUserByIdQuery,
+  ): Promise<InterLayerObject<UserViewModel>> {
     const user = await this.usersQueryRepository.getById(query.userId)
     if (!user) {
       return new InterLayerObject(
@@ -22,6 +24,6 @@ export class GetUserByIdQueryHandler implements IQueryHandler {
         'Пользователь с текущим id не найден',
       )
     }
-    return new InterLayerObject<User>(StatusCode.Success, null, user)
+    return new InterLayerObject(StatusCode.Success, null, user)
   }
 }

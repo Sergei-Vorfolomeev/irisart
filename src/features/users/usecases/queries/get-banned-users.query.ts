@@ -5,6 +5,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { User } from '../../entities/user.entity'
+import { UserBanViewModel } from '../../dto/user-ban-view.model'
 
 export class GetBannedUsersQuery {
   constructor() {}
@@ -14,7 +15,7 @@ export class GetBannedUsersQuery {
 export class GetBannedUsersQueryHandler implements IQueryHandler {
   constructor(private readonly usersQueryRepository: UsersQueryRepository) {}
 
-  async execute(): Promise<InterLayerObject<User[]>> {
+  async execute(): Promise<InterLayerObject<UserBanViewModel[]>> {
     const bannedUsers = await this.usersQueryRepository.getBannedUsers()
     if (!bannedUsers) {
       return new InterLayerObject(
@@ -22,6 +23,10 @@ export class GetBannedUsersQueryHandler implements IQueryHandler {
         'Ошибка получения заблокированных пользователей',
       )
     }
-    return new InterLayerObject<User[]>(StatusCode.Success, null, bannedUsers)
+    return new InterLayerObject<UserBanViewModel[]>(
+      StatusCode.Success,
+      null,
+      bannedUsers,
+    )
   }
 }

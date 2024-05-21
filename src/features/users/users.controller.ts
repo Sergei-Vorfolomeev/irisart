@@ -4,33 +4,28 @@ import {
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   Post,
-  Res,
 } from '@nestjs/common'
-import { UserInputModel } from './dto/user-input.model'
+import { UserCreateInputModel } from './dto/user-create-input.model'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { CreateUserCommand } from './usecases/commands/create-user.command'
 import { DeleteUserCommand } from './usecases/commands/delete-user.command'
 import { handleExceptions } from '../../base/utils/handle-exceptions'
-import { UsersQueryRepository } from './repositories/users.query.repository'
-import { UserBanModel } from './dto/user-ban.model'
+import { UserBanInputModel } from './dto/user-ban-input.model'
 import { BanUserCommand } from './usecases/commands/ban-user.command'
-import { StatusCode } from '../../base/interlayer-object'
-import { Response } from 'express'
 import { UnbanUserCommand } from './usecases/commands/unban-user-command'
 import { GetAllUsersQuery } from './usecases/queries/get-users.query'
 import { GetBannedUsersQuery } from './usecases/queries/get-banned-users.query'
 import { GetBannedUserByIdQuery } from './usecases/queries/get-banned-user-by-id.query'
 import { GetUserByIdQuery } from './usecases/queries/get-user-by-id.query'
+import { PATHS } from '../../base/const/paths'
 
-@Controller('/users')
+@Controller(PATHS.users)
 export class UsersController {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
-    private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
   @Get()
@@ -67,30 +62,45 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
-  async createUser(@Body() body: UserInputModel) {
+  async createUser(@Body() body: UserCreateInputModel) {
     const { login, email, password, role } = body
     const command = new CreateUserCommand(login, email, password, role)
-    const { statusCode, error, data } = await this.commandBus.execute(command)
+    const {
+      statusCode,
+      error,
+      data: createdUserId,
+    } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
-    return data
+
+    const query = new GetUserByIdQuery(createdUserId)
+    const {
+      statusCode: code,
+      error: err,
+      data: user,
+    } = await this.queryBus.execute(query)
+    handleExceptions(code, err)
+    return user
   }
 
   @Post('banned')
   @HttpCode(201)
-  async banUser(
-    @Body() { userId, banReason }: UserBanModel,
-    @Res() res: Response,
-  ) {
+  async banUser(@Body() { userId, banReason }: UserBanInputModel) {
     const command = new BanUserCommand(userId, banReason)
-    const { statusCode, error } = await this.commandBus.execute(command)
+    const {
+      statusCode,
+      error,
+      data: bannedUserId,
+    } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
-    if (statusCode === StatusCode.Created) {
-      const user = await this.usersQueryRepository.getBannedUserById(userId)
-      if (!user) {
-        throw new NotFoundException()
-      }
-      res.send(user)
-    }
+
+    const query = new GetBannedUserByIdQuery(bannedUserId)
+    const {
+      statusCode: code,
+      error: err,
+      data: bannedUser,
+    } = await this.queryBus.execute(query)
+    handleExceptions(code, err)
+    return bannedUser
   }
 
   @Delete(':id')
