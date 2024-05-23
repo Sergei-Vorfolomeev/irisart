@@ -14,6 +14,16 @@ export class UnbanUserCommandHandler implements ICommandHandler {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(command: UnbanUserCommand): Promise<InterLayerObject> {
+    debugger
+    const bannedUser = await this.usersRepository.getBannedUserById(
+      command.userId,
+    )
+    if (!bannedUser) {
+      return new InterLayerObject(
+        StatusCode.NotFound,
+        'Заблокированный пользователь с текущим id не найден',
+      )
+    }
     const isUnbanned = await this.usersRepository.unbanUser(command.userId)
     if (!isUnbanned) {
       return new InterLayerObject(

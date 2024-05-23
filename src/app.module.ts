@@ -5,6 +5,7 @@ import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from './features/users/entities/user.entity'
 import { Ban } from './features/users/entities/ban.entity'
+import { AuthModule } from './features/auth/auth.module'
 
 @Module({
   imports: [
@@ -16,6 +17,8 @@ import { Ban } from './features/users/entities/ban.entity'
     }),
     // registration typeorm-module
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: AppConfigServiceType) => ({
         type: 'postgres',
         host: 'localhost',
@@ -27,9 +30,9 @@ import { Ban } from './features/users/entities/ban.entity'
         autoLoadEntities: true,
         synchronize: true,
       }),
-      inject: [ConfigService],
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

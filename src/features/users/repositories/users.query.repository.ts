@@ -76,7 +76,7 @@ export class UsersQueryRepository implements IUsersQueryRepository {
         from users as u
         left join bans as b
         on u.id = b."userId"
-        where u.id = $1
+        where u.id = $1 and b."banStatus" = true
       `,
         [userId],
       )

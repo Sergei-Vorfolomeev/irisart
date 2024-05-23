@@ -12,7 +12,7 @@ export const initTestSettings = async (
   httpServer: any,
   ...modules
 ) => {
-  const moduleFixture: TestingModule = await Test.createTestingModule({
+  const testingModuleBuilder: TestingModule = await Test.createTestingModule({
     imports: [
       ConfigModule.forRoot({
         isGlobal: true,
@@ -37,9 +37,9 @@ export const initTestSettings = async (
     ],
   }).compile()
 
-  app = moduleFixture.createNestApplication()
+  app = testingModuleBuilder.createNestApplication()
+  applyAppSettings(app)
   await app.init()
-  await applyAppSettings(app)
 
   await dropDb(app)
 

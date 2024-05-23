@@ -8,6 +8,7 @@ import {
 } from 'typeorm'
 import { Roles } from '../types/roles.enum'
 import { Ban } from './ban.entity'
+import { EmailConfirmation } from './email-confirmation'
 
 @Entity('users')
 export class User {
@@ -31,6 +32,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date
+
+  @OneToOne(() => EmailConfirmation, (e) => e.userId, {
+    onDelete: 'CASCADE',
+  })
+  emailConfirmation: EmailConfirmation
 
   @OneToOne(() => Ban, (ban) => ban.userId, { onDelete: 'CASCADE' })
   banInfo: Ban

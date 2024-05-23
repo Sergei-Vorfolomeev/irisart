@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common'
-import { AuthModule } from '../auth/auth.module'
 import { UsersController } from './users.controller'
 import { User } from './entities/user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -17,6 +16,8 @@ import { GetBannedUsersQueryHandler } from './usecases/queries/get-banned-users.
 import { GetBannedUserByIdQueryHandler } from './usecases/queries/get-banned-user-by-id.query'
 import { GetUserByIdQueryHandler } from './usecases/queries/get-user-by-id.query'
 import { Mapper } from '../../base/utils/mapper'
+import { EmailConfirmation } from './entities/email-confirmation'
+import { DataSource } from 'typeorm'
 
 const usersUseCases = [
   GetUsersQueryHandler,
@@ -31,7 +32,10 @@ const usersUseCases = [
 ]
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Ban]), CqrsModule, AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([User, Ban, EmailConfirmation]),
+    CqrsModule,
+  ],
   providers: [
     ...usersUseCases,
     BcryptAdapter,
@@ -40,6 +44,6 @@ const usersUseCases = [
     Mapper,
   ],
   controllers: [UsersController],
-  exports: [],
+  exports: [TypeOrmModule, UsersRepository, BcryptAdapter],
 })
 export class UsersModule {}

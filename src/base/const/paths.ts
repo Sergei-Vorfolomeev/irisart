@@ -1,3 +1,3 @@
 export const PATHS = {
-  users: '/users',
+  users: '/api/users',
 }

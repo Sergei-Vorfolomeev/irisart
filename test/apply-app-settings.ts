@@ -3,7 +3,9 @@ import * as cookieParser from 'cookie-parser'
 
 const APP_PREFIX = '/api'
 
-export const applyAppSettings = async (app: INestApplication) => {
+export const applyAppSettings = (app: INestApplication) => {
+  // useContainer(app.select(AppModule), { fallbackOnErrors: true })
+
   app.enableCors()
   app.use(cookieParser())
   app.setGlobalPrefix(APP_PREFIX)
@@ -22,6 +24,4 @@ export const applyAppSettings = async (app: INestApplication) => {
       // validationError: { target: false, value: false }
     }),
   )
-
-  return app
 }

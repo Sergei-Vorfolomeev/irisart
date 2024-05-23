@@ -24,6 +24,28 @@ describe('UsersController (e2e)', () => {
     await request(httpServer).get(PATHS.users).expect(200, [])
   })
 
+  it('create user with incorrect input data', async () => {
+    const { body } = await request(httpServer)
+      .post(PATHS.users)
+      .send({
+        email: 'test.com',
+        password: '12',
+        role: false,
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      message: [
+        'login should not be empty',
+        'email must be an email',
+        'password must be longer than or equal to 6 characters',
+        'role must be one of the following values: user, admin',
+      ],
+      error: 'Bad Request',
+      statusCode: 400,
+    })
+  })
+
   let user: any
   it('create user', async () => {
     const { body } = await request(httpServer)
@@ -48,6 +70,18 @@ describe('UsersController (e2e)', () => {
     })
   })
 
+  it('get user by wrong id', async () => {
+    const { body } = await request(httpServer)
+      .get(`${PATHS.users}/5312875b-ab0f-4cf1-a9d4-ab2c5d6d40a4`)
+      .expect(404)
+
+    expect(body).toEqual({
+      message: 'Пользователь с текущим id не найден',
+      error: 'Not Found',
+      statusCode: 404,
+    })
+  })
+
   it('get user by id', async () => {
     const { body } = await request(httpServer)
       .get(`${PATHS.users}/${user.id}`)
@@ -60,6 +94,37 @@ describe('UsersController (e2e)', () => {
       role: user.role,
       banStatus: false,
       createdAt: expect.any(String),
+    })
+  })
+
+  it('block user with wrong input data', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.users}/banned`)
+      .send({
+        banReason: null,
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      message: ['userId should not be empty', 'banReason should not be empty'],
+      error: 'Bad Request',
+      statusCode: 400,
+    })
+  })
+
+  it('block user with wrong user id', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.users}/banned`)
+      .send({
+        userId: '5312875b-ab0f-4cf1-a9d4-ab2c5d6d40a4',
+        banReason: 'exists',
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      message: 'Пользователь с текущим id не найден',
+      error: 'Bad Request',
+      statusCode: 400,
     })
   })
 
@@ -120,9 +185,33 @@ describe('UsersController (e2e)', () => {
     })
   })
 
+  it('get blocked user with wrong id', async () => {
+    const { body } = await request(httpServer)
+      .get(`${PATHS.users}/banned/5312875b-ab0f-4cf1-a9d4-ab2c5d6d40a4`)
+      .expect(404)
+
+    expect(body).toEqual({
+      message: 'Заблокированный пользователь с текущим id не найден',
+      error: 'Not Found',
+      statusCode: 404,
+    })
+  })
+
   it('unblock user', async () => {
     await request(httpServer)
       .delete(`${PATHS.users}/banned/${user.id}`)
       .expect(204)
+  })
+
+  it('unblock user with wrong id', async () => {
+    const { body } = await request(httpServer)
+      .delete(`${PATHS.users}/banned/${user.id}`)
+      .expect(404)
+
+    expect(body).toEqual({
+      message: 'Заблокированный пользователь с текущим id не найден',
+      error: 'Not Found',
+      statusCode: 404,
+    })
   })
 })

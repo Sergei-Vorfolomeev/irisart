@@ -8,10 +8,18 @@ export type UserDBModel = {
   role: Roles
   createdAt?: Date
   updatedAt?: Date
-  banInfo?: Ban
+  emailConfirmation?: EmailConfirmationType
+  banInfo?: BanType
 }
 
-export type Ban = {
+export type EmailConfirmationType = {
+  userId: string
+  isConfirmed: boolean
+  confirmationCode: string
+  expirationDate: Date
+}
+
+type BanType = {
   status: boolean
   bannedAt: Date
 }
