@@ -10,6 +10,10 @@ const config = () => ({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
   },
+  emailAdapter: {
+    email: process.env.EMAIL,
+    password: process.env.PASSWORD,
+  },
 })
 
 export type ConfigType = ReturnType<typeof config>

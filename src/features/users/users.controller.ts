@@ -19,9 +19,8 @@ import { GetAllUsersQuery } from './usecases/queries/get-users.query'
 import { GetBannedUsersQuery } from './usecases/queries/get-banned-users.query'
 import { GetBannedUserByIdQuery } from './usecases/queries/get-banned-user-by-id.query'
 import { GetUserByIdQuery } from './usecases/queries/get-user-by-id.query'
-import { PATHS } from '../../base/const/paths'
 
-@Controller(PATHS.users)
+@Controller('users')
 export class UsersController {
   constructor(
     private readonly queryBus: QueryBus,

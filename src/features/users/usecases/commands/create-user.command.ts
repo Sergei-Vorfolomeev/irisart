@@ -1,12 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
-import { UserDBModel } from '../../types/user-db.model'
+import { EmailConfirmationType, UserDBModel } from '../../types/user-db.model'
 import { UsersRepository } from '../../repositories/users.repository'
 import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { Roles } from '../../types/roles.enum'
+import { randomUUID } from 'crypto'
+import { add } from 'date-fns/add'
 
 export class CreateUserCommand {
   constructor(
@@ -36,22 +38,32 @@ export class CreateUserCommandHandler
       )
     }
     const newUser: UserDBModel = {
+      id: randomUUID(),
       login,
       email,
       password: hashedPassword,
       role,
     }
-    const createdUser = await this.usersRepository.create(newUser)
-    if (!createdUser) {
+
+    const emailConfirmation: EmailConfirmationType = {
+      userId: newUser.id,
+      isConfirmed: true,
+      confirmationCode: randomUUID(),
+      expirationDate: add(new Date(), {
+        hours: 1,
+        minutes: 30,
+      }),
+    }
+    const createdUserId = await this.usersRepository.create(
+      newUser,
+      emailConfirmation,
+    )
+    if (!createdUserId) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка сохранения пользователя',
       )
     }
-    return new InterLayerObject<string>(
-      StatusCode.Created,
-      null,
-      createdUser.id,
-    )
+    return new InterLayerObject<string>(StatusCode.Created, null, createdUserId)
   }
 }
