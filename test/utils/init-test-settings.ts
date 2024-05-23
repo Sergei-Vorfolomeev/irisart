@@ -6,13 +6,15 @@ import configuration, {
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { applyAppSettings } from '../apply-app-settings'
 import { dropDb } from './drop-db'
+import { EmailAdapter } from '../../src/base/adapters/email.adapter'
+import { EmailAdapterMock } from '../mocks/email.adapter.mock'
 
 export const initTestSettings = async (
   app: any,
   httpServer: any,
   ...modules
 ) => {
-  const testingModuleBuilder: TestingModule = await Test.createTestingModule({
+  const testingModule: TestingModule = await Test.createTestingModule({
     imports: [
       ConfigModule.forRoot({
         isGlobal: true,
@@ -35,9 +37,12 @@ export const initTestSettings = async (
       }),
       ...modules,
     ],
-  }).compile()
+  })
+    .overrideProvider(EmailAdapter)
+    .useClass(EmailAdapterMock)
+    .compile()
 
-  app = testingModuleBuilder.createNestApplication()
+  app = testingModule.createNestApplication()
   applyAppSettings(app)
   await app.init()
 
