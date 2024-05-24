@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import configuration, {
-  AppConfigServiceType,
-} from '../../src/settings/configuration'
+import configuration, { ConfigType } from '../../src/settings/configuration'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { applyAppSettings } from '../apply-app-settings'
 import { dropDb } from './drop-db'
@@ -22,14 +20,13 @@ export const initTestSettings = async (
         envFilePath: ['.env.dev', '.env.stage', '.env.prod'],
       }),
       TypeOrmModule.forRootAsync({
-        useFactory: (configService: AppConfigServiceType) => ({
+        useFactory: (configService: ConfigService<ConfigType, true>) => ({
           type: 'postgres',
           host: 'localhost',
           port: configService.get('db.port', { infer: true }),
           username: configService.get('db.username', { infer: true }),
           password: configService.get('db.password', { infer: true }),
           database: 'test_db',
-          // entities: [],
           autoLoadEntities: true,
           synchronize: true,
         }),

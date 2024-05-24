@@ -15,7 +15,9 @@ export class Ban {
   @Column({ nullable: true })
   bannedAt: Date
 
-  @OneToOne(() => User, (user) => user.banInfo, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.banInfo, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: User
 }

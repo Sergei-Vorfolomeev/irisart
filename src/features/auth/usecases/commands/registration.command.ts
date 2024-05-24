@@ -60,8 +60,6 @@ export class RegistrationCommandHandler implements ICommandHandler {
       )
     }
 
-    debugger
-
     const newUser: UserDBModel = {
       id: randomUUID(),
       login,

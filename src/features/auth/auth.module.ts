@@ -4,12 +4,20 @@ import { CqrsModule } from '@nestjs/cqrs'
 import { AuthController } from './auth.controller'
 import { RegistrationCommandHandler } from './usecases/commands/registration.command'
 import { EmailAdapter } from '../../base/adapters/email.adapter'
+import { CryptoAdapter } from '../../base/adapters/crypto.adapter'
+import { JwtAdapter } from '../../base/adapters/jwt.adapter'
+import { LoginCommandHandler } from './usecases/commands/login.command'
+import { ConfirmEmailCommandHandler } from './usecases/commands/confirm-email.command'
 
-const authUseCases = [RegistrationCommandHandler]
+const authUseCases = [
+  RegistrationCommandHandler,
+  LoginCommandHandler,
+  ConfirmEmailCommandHandler,
+]
 
 @Module({
-  imports: [UsersModule, CqrsModule],
-  providers: [...authUseCases, EmailAdapter],
+  imports: [CqrsModule, UsersModule],
+  providers: [...authUseCases, EmailAdapter, JwtAdapter, CryptoAdapter],
   controllers: [AuthController],
   exports: [],
 })
