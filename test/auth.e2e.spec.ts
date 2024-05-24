@@ -101,14 +101,18 @@ describe('AuthController (e2e)', () => {
     })
   })
 
+  let validRefreshToken: string
   it('successfully login', async () => {
-    const { body } = await request(httpServer)
+    const { body, headers } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
         loginOrEmail: 'test@gmail.com',
         password: '123456',
       })
       .expect(200)
+
+    const cookieHeader = headers['set-cookie']
+    validRefreshToken = cookieHeader[0].split(';')[0].split('=')[1]
 
     expect(body).toEqual({
       accessToken: expect.any(String),
@@ -173,5 +177,12 @@ describe('AuthController (e2e)', () => {
       message: 'Почтовый адрес уже подтвержден',
       statusCode: 400,
     })
+  })
+
+  it('logout', async () => {
+    await request(httpServer)
+      .post(`${PATHS.auth}/sign-out`)
+      .set('Cookie', `refreshToken=${validRefreshToken}`)
+      .expect(204)
   })
 })

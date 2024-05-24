@@ -9,12 +9,14 @@ import { JwtAdapter } from '../../base/adapters/jwt.adapter'
 import { LoginCommandHandler } from './usecases/commands/login.command'
 import { ConfirmEmailCommandHandler } from './usecases/commands/confirm-email.command'
 import { ResendCodeCommandHandler } from './usecases/commands/resend-code.command'
+import { LogoutCommandHandler } from './usecases/commands/logout.command'
 
 const authUseCases = [
   RegistrationCommandHandler,
   LoginCommandHandler,
   ConfirmEmailCommandHandler,
   ResendCodeCommandHandler,
+  LogoutCommandHandler,
 ]
 
 @Module({

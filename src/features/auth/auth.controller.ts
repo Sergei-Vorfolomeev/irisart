@@ -9,6 +9,8 @@ import { ConfirmEmailInputModel } from './dto/confirm-email.input.model'
 import { ConfirmEmailCommand } from './usecases/commands/confirm-email.command'
 import { ResendCodeInputModel } from './dto/resend-code.input.model'
 import { ResendCodeCommand } from './usecases/commands/resend-code.command'
+import { RefreshToken } from '../../infrastructure/decorators/refresh-token.decorator'
+import { LogoutCommand } from './usecases/commands/logout.command'
 
 @Controller('auth')
 export class AuthController {
@@ -51,6 +53,14 @@ export class AuthController {
   @HttpCode(204)
   async resendConfirmationCode(@Body() { email }: ResendCodeInputModel) {
     const command = new ResendCodeCommand(email)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+  }
+
+  @Post('sign-out')
+  @HttpCode(204)
+  async logout(@RefreshToken() refreshToken: string) {
+    const command = new LogoutCommand(refreshToken)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
   }
