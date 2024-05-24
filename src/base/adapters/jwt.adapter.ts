@@ -26,15 +26,20 @@ export class JwtAdapter {
   }
 
   createToken(user: User, type: 'access' | 'refresh'): string {
-    const secretKey = type === 'access' ? this.secretKeyOne : this.secretKeyTwo
-
-    return jwt.sign(
-      {
-        userId: user.id,
-      },
-      secretKey,
-      { expiresIn: type === 'access' ? '24h' : '72h' },
-    )
+    try {
+      const secretKey =
+        type === 'access' ? this.secretKeyOne : this.secretKeyTwo
+      return jwt.sign(
+        {
+          userId: user.id,
+        },
+        secretKey,
+        { expiresIn: type === 'access' ? '24h' : '72h' },
+      )
+    } catch (error) {
+      console.error('Ошибка создания токена: ' + error)
+      return null
+    }
   }
 
   async verifyToken(
@@ -46,7 +51,7 @@ export class JwtAdapter {
         type === 'access' ? this.secretKeyOne : this.secretKeyTwo
       return jwt.verify(token, secretKey) as jwt.JwtPayload
     } catch (error) {
-      console.error('Token verification has the following error: ' + error)
+      console.error('Ошибка верификации токена: ' + error)
       return null
     }
   }
@@ -60,27 +65,20 @@ export class JwtAdapter {
     return { accessToken, refreshToken, encryptedRefreshToken }
   }
 
-  // async verifyRefreshToken(refreshToken: string) {
-  //   const payload = await this.verifyToken(refreshToken, 'refresh')
-  //   if (!payload) {
-  //     return null
-  //   }
-  //   const { userId, deviceId } = payload
-  //   const user = await this.usersRepository.getById(userId)
-  //   if (!user) {
-  //     return null
-  //   }
-  //   const device = await this.devicesRepository.findDeviceById(deviceId)
-  //   if (!device) {
-  //     return null
-  //   }
-  //   const decryptedRefreshToken = this.cryptoAdapter.decrypt(
-  //     device.refreshToken,
-  //   )
-  //   const isMatched = refreshToken === decryptedRefreshToken
-  //   if (!isMatched) {
-  //     return null
-  //   }
-  //   return { user, device }
-  // }
+  async verifyRefreshToken(refreshToken: string) {
+    const payload = await this.verifyToken(refreshToken, 'refresh')
+    if (!payload) {
+      return null
+    }
+    const user = await this.usersRepository.getById(payload.userId)
+    if (!user) {
+      return null
+    }
+    const decryptedRefreshToken = this.cryptoAdapter.decrypt(user.refreshToken)
+    const isMatched = refreshToken === decryptedRefreshToken
+    if (!isMatched) {
+      return null
+    }
+    return user
+  }
 }

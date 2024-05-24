@@ -1,8 +1,8 @@
-import { IsUUID } from 'class-validator'
+import { IsEmail } from 'class-validator'
 import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
 
-export class ConfirmEmailInputModel {
-  @IsUUID()
+export class ResendCodeInputModel {
+  @IsEmail()
   @IsValidString()
-  code: string
+  email: string
 }

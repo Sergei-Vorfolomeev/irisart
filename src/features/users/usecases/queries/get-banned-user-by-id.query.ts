@@ -4,7 +4,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { UserBanViewModel } from '../../dto/user-ban-view.model'
+import { UserBanViewModel } from '../../dto/user-ban.view.model'
 
 export class GetBannedUserByIdQuery {
   constructor(public userId: string) {}

@@ -7,7 +7,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { isLogLevelEnabled } from '@nestjs/common/services/utils'
-import { UserViewModel } from '../../dto/user-view.model'
+import { UserViewModel } from '../../dto/user.view.model'
 
 export class GetAllUsersQuery {
   constructor() {}

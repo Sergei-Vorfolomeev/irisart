@@ -148,16 +148,4 @@ export class UsersRepository implements IUsersRepository {
       return null
     }
   }
-
-  async confirmEmail(
-    confirmation: EmailConfirmation,
-  ): Promise<EmailConfirmation | null> {
-    try {
-      confirmation.isConfirmed = true
-      return await this.emailConfirmationsOrmRepo.save(confirmation)
-    } catch (e) {
-      console.error(e)
-      return null
-    }
-  }
 }

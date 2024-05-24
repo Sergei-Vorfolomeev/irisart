@@ -1,4 +1,4 @@
-import { UserViewModel } from './user-view.model'
+import { UserViewModel } from './user.view.model'
 
 export type UserBanViewModel = UserViewModel & {
   banReason: string

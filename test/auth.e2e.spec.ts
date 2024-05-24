@@ -10,11 +10,13 @@ import { UsersRepository } from '../src/features/users/repositories/users.reposi
 describe('AuthController (e2e)', () => {
   let app: INestApplication
   let httpServer: any
+  let usersRepository: UsersRepository
 
   beforeAll(async () => {
     const res = await initTestSettings(app, httpServer, UsersModule, AuthModule)
     app = res.app
     httpServer = res.httpServer
+    usersRepository = app.get(UsersRepository)
   })
 
   afterAll(async () => {
@@ -99,8 +101,9 @@ describe('AuthController (e2e)', () => {
     })
   })
 
+  let validRefreshToken: string
   it('successfully login', async () => {
-    const { body } = await request(httpServer)
+    const { body, headers } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
         loginOrEmail: 'test@gmail.com',
@@ -108,15 +111,47 @@ describe('AuthController (e2e)', () => {
       })
       .expect(200)
 
+    const cookieHeader = headers['set-cookie']
+    validRefreshToken = cookieHeader[0].split(';')[0].split('=')[1]
+
     expect(body).toEqual({
       accessToken: expect.any(String),
     })
     expect(body.accessToken).toContain('.')
   })
 
+  it('resend confirmation code with wrong email', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.auth}/resend-code`)
+      .send({
+        email: 'wrongEmail@gmail.com',
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Пользователь с текущим почтовым ящиком не найден',
+      statusCode: 400,
+    })
+  })
+
+  let user: any
+  it('successfully resend confirmation code', async () => {
+    user = await usersRepository.findUserByLoginOrEmail('test')
+    const previousCode = user.emailConfirmation.confirmationCode
+
+    await request(httpServer)
+      .post(`${PATHS.auth}/resend-code`)
+      .send({
+        email: user.email,
+      })
+      .expect(204)
+
+    user = await usersRepository.findUserByLoginOrEmail('test')
+    expect(user.emailConfirmation.confirmationCode).not.toBe(previousCode)
+  })
+
   it('successfully email confirmation', async () => {
-    const usersRepository = app.get(UsersRepository)
-    let user = await usersRepository.findUserByLoginOrEmail('test')
     await request(httpServer)
       .post(`${PATHS.auth}/confirm-email`)
       .send({
@@ -127,5 +162,27 @@ describe('AuthController (e2e)', () => {
     user = await usersRepository.findUserByLoginOrEmail('test')
 
     expect(user.emailConfirmation.isConfirmed).toBe(true)
+  })
+
+  it('resend confirmation code to approved account', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.auth}/resend-code`)
+      .send({
+        email: user.email,
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Почтовый адрес уже подтвержден',
+      statusCode: 400,
+    })
+  })
+
+  it('logout', async () => {
+    await request(httpServer)
+      .post(`${PATHS.auth}/sign-out`)
+      .set('Cookie', `refreshToken=${validRefreshToken}`)
+      .expect(204)
   })
 })

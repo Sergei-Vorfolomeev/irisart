@@ -7,12 +7,12 @@ import {
   Param,
   Post,
 } from '@nestjs/common'
-import { UserCreateInputModel } from './dto/user-create-input.model'
+import { UserCreateInputModel } from './dto/user-create.input.model'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { CreateUserCommand } from './usecases/commands/create-user.command'
 import { DeleteUserCommand } from './usecases/commands/delete-user.command'
 import { handleExceptions } from '../../base/utils/handle-exceptions'
-import { UserBanInputModel } from './dto/user-ban-input.model'
+import { UserBanInputModel } from './dto/user-ban.input.model'
 import { BanUserCommand } from './usecases/commands/ban-user.command'
 import { UnbanUserCommand } from './usecases/commands/unban-user-command'
 import { GetAllUsersQuery } from './usecases/queries/get-users.query'
