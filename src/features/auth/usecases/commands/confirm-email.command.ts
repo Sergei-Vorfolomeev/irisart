@@ -36,11 +36,10 @@ export class ConfirmEmailCommandHandler implements ICommandHandler {
       )
     }
 
-    const updatedConfirmation = await this.usersRepository.confirmEmail(
-      user.emailConfirmation,
-    )
+    user.emailConfirmation.isConfirmed = true
+    const updatedUser = await this.usersRepository.save(user)
 
-    if (!updatedConfirmation || !updatedConfirmation.isConfirmed) {
+    if (!updatedUser || !updatedUser.emailConfirmation.isConfirmed) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка подтверждения электронной почты',

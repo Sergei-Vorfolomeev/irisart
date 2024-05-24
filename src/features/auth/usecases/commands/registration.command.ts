@@ -97,7 +97,7 @@ export class RegistrationCommandHandler implements ICommandHandler {
     if (!isSent) {
       return new InterLayerObject(
         StatusCode.ServerError,
-        'Ошибка отправки письма для подтверждения электронной почты',
+        'Ошибка отправки письма',
       )
     }
     return new InterLayerObject(StatusCode.NoContent)

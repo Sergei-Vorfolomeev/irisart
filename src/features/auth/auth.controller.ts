@@ -7,6 +7,8 @@ import { LoginCommand } from './usecases/commands/login.command'
 import { Response } from 'express'
 import { ConfirmEmailInputModel } from './dto/confirm-email.input.model'
 import { ConfirmEmailCommand } from './usecases/commands/confirm-email.command'
+import { ResendCodeInputModel } from './dto/resend-code.input.model'
+import { ResendCodeCommand } from './usecases/commands/resend-code.command'
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +43,14 @@ export class AuthController {
   @HttpCode(204)
   async confirmEmail(@Body() { code }: ConfirmEmailInputModel) {
     const command = new ConfirmEmailCommand(code)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+  }
+
+  @Post('resend-code')
+  @HttpCode(204)
+  async resendConfirmationCode(@Body() { email }: ResendCodeInputModel) {
+    const command = new ResendCodeCommand(email)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
   }

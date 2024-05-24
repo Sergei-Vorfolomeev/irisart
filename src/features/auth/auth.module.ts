@@ -8,11 +8,13 @@ import { CryptoAdapter } from '../../base/adapters/crypto.adapter'
 import { JwtAdapter } from '../../base/adapters/jwt.adapter'
 import { LoginCommandHandler } from './usecases/commands/login.command'
 import { ConfirmEmailCommandHandler } from './usecases/commands/confirm-email.command'
+import { ResendCodeCommandHandler } from './usecases/commands/resend-code.command'
 
 const authUseCases = [
   RegistrationCommandHandler,
   LoginCommandHandler,
   ConfirmEmailCommandHandler,
+  ResendCodeCommandHandler,
 ]
 
 @Module({

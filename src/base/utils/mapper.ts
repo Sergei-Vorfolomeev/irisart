@@ -1,8 +1,8 @@
 import { UserDBModel } from '../../features/users/types/user-db.model'
-import { UserViewModel } from '../../features/users/dto/user-view.model'
+import { UserViewModel } from '../../features/users/dto/user.view.model'
 import { Injectable } from '@nestjs/common'
 import { BanDBModel } from '../../features/users/types/ban-db.model'
-import { UserBanViewModel } from '../../features/users/dto/user-ban-view.model'
+import { UserBanViewModel } from '../../features/users/dto/user-ban.view.model'
 
 @Injectable()
 export class Mapper {

@@ -1,18 +1,16 @@
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator'
+import { IsEmail, Length } from 'class-validator'
+import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
 
 export class RegistrationInputModel {
   @Length(3, 30)
-  @IsString()
-  @IsNotEmpty()
+  @IsValidString()
   login: string
 
   @IsEmail()
-  @IsString()
-  @IsNotEmpty()
+  @IsValidString()
   email: string
 
   @Length(6, 35)
-  @IsString()
-  @IsNotEmpty()
+  @IsValidString()
   password: string
 }

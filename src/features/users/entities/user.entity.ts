@@ -38,6 +38,7 @@ export class User {
   updatedAt: Date
 
   @OneToOne(() => EmailConfirmation, (e) => e.user, {
+    cascade: true,
     onDelete: 'CASCADE',
   })
   emailConfirmation: EmailConfirmation

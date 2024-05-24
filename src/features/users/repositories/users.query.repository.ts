@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
 import { Injectable } from '@nestjs/common'
-import { UserViewModel } from '../dto/user-view.model'
-import { UserBanViewModel } from '../dto/user-ban-view.model'
+import { UserViewModel } from '../dto/user.view.model'
+import { UserBanViewModel } from '../dto/user-ban.view.model'
 import { Mapper } from '../../../base/utils/mapper'
 
 @Injectable()

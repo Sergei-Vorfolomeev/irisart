@@ -5,7 +5,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { User } from '../../entities/user.entity'
-import { UserBanViewModel } from '../../dto/user-ban-view.model'
+import { UserBanViewModel } from '../../dto/user-ban.view.model'
 
 export class GetBannedUsersQuery {
   constructor() {}

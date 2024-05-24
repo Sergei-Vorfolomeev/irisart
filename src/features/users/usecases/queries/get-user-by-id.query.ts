@@ -4,7 +4,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { UserViewModel } from '../../dto/user-view.model'
+import { UserViewModel } from '../../dto/user.view.model'
 
 export class GetUserByIdQuery {
   constructor(public userId: string) {}
