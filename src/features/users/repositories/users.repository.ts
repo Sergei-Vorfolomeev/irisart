@@ -13,6 +13,8 @@ export class UsersRepository implements IUsersRepository {
   constructor(
     @InjectRepository(User) private readonly usersOrmRepo: Repository<User>,
     @InjectRepository(Ban) private readonly bansOrmRepo: Repository<Ban>,
+    @InjectRepository(EmailConfirmation)
+    private readonly emailConfirmationsOrmRepo: Repository<EmailConfirmation>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
@@ -95,11 +97,11 @@ export class UsersRepository implements IUsersRepository {
     try {
       const userInArray = await this.usersOrmRepo.query(
         `
-        select u.*, b."banStatus", b."banReason", b."bannedAt" 
-        from users as u
-        left join bans as b
-        on u.id = b."userId"
-        where u.id = $1 and b."banStatus" = true
+          select u.*, b."banStatus", b."banReason", b."bannedAt" 
+          from users as u
+          left join bans as b
+          on u.id = b."userId"
+          where u.id = $1 and b."banStatus" = true
       `,
         [userId],
       )
@@ -110,16 +112,49 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async findUserByLoginOrEmail(loginOrEmail: string) {
+  async findUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
     try {
-      const userInArray = await this.usersOrmRepo.query(
-        `
-           select * from users as u
-           where u."login" = $1 or u."email" = $1 
-      `,
-        [loginOrEmail],
-      )
-      return userInArray[0]
+      return await this.usersOrmRepo.findOne({
+        where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+        relations: ['emailConfirmation', 'banInfo'],
+      })
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async save(user: User): Promise<User | null> {
+    try {
+      return await this.usersOrmRepo.save(user)
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async findByConfirmationCode(code: string): Promise<User | null> {
+    try {
+      return await this.usersOrmRepo.findOne({
+        relations: ['emailConfirmation'],
+        where: {
+          emailConfirmation: {
+            confirmationCode: code,
+          },
+        },
+      })
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async confirmEmail(
+    confirmation: EmailConfirmation,
+  ): Promise<EmailConfirmation | null> {
+    try {
+      confirmation.isConfirmed = true
+      return await this.emailConfirmationsOrmRepo.save(confirmation)
     } catch (e) {
       console.error(e)
       return null

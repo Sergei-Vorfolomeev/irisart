@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import configuration, { AppConfigServiceType } from './settings/configuration'
+import configuration, { ConfigType } from './settings/configuration'
 import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from './features/users/entities/user.entity'
-import { Ban } from './features/users/entities/ban.entity'
 import { AuthModule } from './features/auth/auth.module'
 
 @Module({
@@ -17,16 +15,14 @@ import { AuthModule } from './features/auth/auth.module'
     }),
     // registration typeorm-module
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: AppConfigServiceType) => ({
+      useFactory: (configService: ConfigService<ConfigType, true>) => ({
         type: 'postgres',
         host: 'localhost',
         port: configService.get('db.port', { infer: true }),
         username: configService.get('db.username', { infer: true }),
         password: configService.get('db.password', { infer: true }),
         database: configService.get('db.name', { infer: true }),
-        entities: [User, Ban],
         autoLoadEntities: true,
         synchronize: true,
       }),

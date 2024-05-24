@@ -28,8 +28,27 @@ export class CreateUserCommandHandler
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async execute(command: CreateUserCommand): Promise<InterLayerObject<string>> {
-    const { login, email, password, role } = command
+  async execute({
+    login,
+    email,
+    password,
+    role,
+  }: CreateUserCommand): Promise<InterLayerObject<string>> {
+    const userByLogin = await this.usersRepository.findUserByLoginOrEmail(login)
+    if (userByLogin) {
+      return new InterLayerObject(
+        StatusCode.BadRequest,
+        'Пользователь с указанным логином уже существует',
+      )
+    }
+
+    const userByEmail = await this.usersRepository.findUserByLoginOrEmail(email)
+    if (userByEmail) {
+      return new InterLayerObject(
+        StatusCode.BadRequest,
+        'Пользователь с указанным почтовым ящиком уже существует',
+      )
+    }
     const hashedPassword = await this.bcryptAdapter.generateHash(password)
     if (!hashedPassword) {
       return new InterLayerObject(

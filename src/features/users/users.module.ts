@@ -17,7 +17,6 @@ import { GetBannedUserByIdQueryHandler } from './usecases/queries/get-banned-use
 import { GetUserByIdQueryHandler } from './usecases/queries/get-user-by-id.query'
 import { Mapper } from '../../base/utils/mapper'
 import { EmailConfirmation } from './entities/email-confirmation'
-import { DataSource } from 'typeorm'
 
 const usersUseCases = [
   GetUsersQueryHandler,

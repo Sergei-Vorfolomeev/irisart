@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -24,6 +25,9 @@ export class User {
   @Column()
   password: string
 
+  @Column({ nullable: true })
+  refreshToken: string
+
   @Column({ enum: Roles, default: Roles.user })
   role: Roles
 
@@ -33,11 +37,13 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @OneToOne(() => EmailConfirmation, (e) => e.userId, {
+  @OneToOne(() => EmailConfirmation, (e) => e.user, {
     onDelete: 'CASCADE',
   })
   emailConfirmation: EmailConfirmation
 
-  @OneToOne(() => Ban, (ban) => ban.userId, { onDelete: 'CASCADE' })
+  @OneToOne(() => Ban, (ban) => ban.user, {
+    onDelete: 'CASCADE',
+  })
   banInfo: Ban
 }
