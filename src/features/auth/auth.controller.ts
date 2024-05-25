@@ -11,6 +11,10 @@ import { ResendCodeInputModel } from './dto/resend-code.input.model'
 import { ResendCodeCommand } from './usecases/commands/resend-code.command'
 import { RefreshToken } from '../../infrastructure/decorators/refresh-token.decorator'
 import { LogoutCommand } from './usecases/commands/logout.command'
+import { RecoverPasswordInputModel } from './dto/recover-password.input.model'
+import { RecoverPasswordCommand } from './usecases/commands/recover-password.command'
+import { SetNewPasswordInputModel } from './dto/set-new-password.input.model'
+import { SetNewPasswordCommand } from './usecases/commands/set-new-password.command'
 
 @Controller('auth')
 export class AuthController {
@@ -61,6 +65,24 @@ export class AuthController {
   @HttpCode(204)
   async logout(@RefreshToken() refreshToken: string) {
     const command = new LogoutCommand(refreshToken)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+  }
+
+  @Post('recover-password')
+  @HttpCode(204)
+  async recoverPassword(@Body() { email }: RecoverPasswordInputModel) {
+    const command = new RecoverPasswordCommand(email)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+  }
+
+  @Post('set-new-password')
+  @HttpCode(204)
+  async setNewPassword(
+    @Body() { recoveryCode, newPassword }: SetNewPasswordInputModel,
+  ) {
+    const command = new SetNewPasswordCommand(recoveryCode, newPassword)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
   }
