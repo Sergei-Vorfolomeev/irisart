@@ -1,6 +1,6 @@
 export const templateForPasswordRecovery = (code: string) => {
-  return `<h1>Password recovery</h1>
-       <p>To finish password recovery please follow the link below:
-          <a href='https://somesite.com/password-recovery?recoveryCode=${code}'>recovery password</a>
+  return `<h1>Восстановление пароля</h1>
+       <p>Для завершения восстановления пароля, пожалуйста, перейдите по ссылке ниже:
+          <a href="https://localhost:4040/new-password?recoveryCode=${code}">восстановить пароль</a>
       </p>`
 }

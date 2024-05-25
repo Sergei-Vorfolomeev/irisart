@@ -9,6 +9,7 @@ import {
 import { Roles } from '../types/roles.enum'
 import { Ban } from './ban.entity'
 import { EmailConfirmation } from './email-confirmation'
+import { PasswordRecovery } from '../../auth/entities/password-recovery.entity'
 
 @Entity('users')
 export class User {
@@ -41,6 +42,12 @@ export class User {
     onDelete: 'CASCADE',
   })
   emailConfirmation: EmailConfirmation
+
+  @OneToOne(() => PasswordRecovery, (pR) => pR.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  passwordRecovery: PasswordRecovery
 
   @OneToOne(() => Ban, (ban) => ban.user, {
     onDelete: 'CASCADE',

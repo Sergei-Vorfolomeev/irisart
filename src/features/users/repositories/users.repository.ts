@@ -13,8 +13,6 @@ export class UsersRepository implements IUsersRepository {
   constructor(
     @InjectRepository(User) private readonly usersOrmRepo: Repository<User>,
     @InjectRepository(Ban) private readonly bansOrmRepo: Repository<Ban>,
-    @InjectRepository(EmailConfirmation)
-    private readonly emailConfirmationsOrmRepo: Repository<EmailConfirmation>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
@@ -116,7 +114,7 @@ export class UsersRepository implements IUsersRepository {
     try {
       return await this.usersOrmRepo.findOne({
         where: [{ login: loginOrEmail }, { email: loginOrEmail }],
-        relations: ['emailConfirmation', 'banInfo'],
+        relations: ['emailConfirmation', 'banInfo', 'passwordRecovery'],
       })
     } catch (e) {
       console.error(e)
@@ -140,6 +138,22 @@ export class UsersRepository implements IUsersRepository {
         where: {
           emailConfirmation: {
             confirmationCode: code,
+          },
+        },
+      })
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async findUserByRecoveryCode(code: string): Promise<User | null> {
+    try {
+      return await this.usersOrmRepo.findOne({
+        relations: ['passwordRecovery'],
+        where: {
+          passwordRecovery: {
+            recoveryCode: code,
           },
         },
       })

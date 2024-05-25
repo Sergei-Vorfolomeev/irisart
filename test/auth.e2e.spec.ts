@@ -185,4 +185,53 @@ describe('AuthController (e2e)', () => {
       .set('Cookie', `refreshToken=${validRefreshToken}`)
       .expect(204)
   })
+
+  it('request to recover password', async () => {
+    let previousRecoveryCode: string
+    if (user.passwordRecovery) {
+      previousRecoveryCode = user.passwordRecovery.recoveryCode
+    }
+
+    await request(httpServer)
+      .post(`${PATHS.auth}/recover-password`)
+      .send({
+        email: user.email,
+      })
+      .expect(204)
+
+    user = await usersRepository.findUserByLoginOrEmail(user.email)
+    expect(user.passwordRecovery.recoveryCode).not.toBe(null)
+    expect(user.passwordRecovery.recoveryCode).not.toBe(previousRecoveryCode)
+  })
+
+  it('successfully setting new password', async () => {
+    const previousPassword = user.password
+
+    await request(httpServer)
+      .post(`${PATHS.auth}/set-new-password`)
+      .send({
+        recoveryCode: user.passwordRecovery.recoveryCode,
+        newPassword: 'my_new_password',
+      })
+      .expect(204)
+
+    user = await usersRepository.findUserByLoginOrEmail(user.email)
+    expect(user.password).not.toBe(previousPassword)
+  })
+
+  it('setting new password with incorrect recovery code', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.auth}/set-new-password`)
+      .send({
+        recoveryCode: 'dfbe5440-bc2a-4176-aa38-8b1f5811af4c',
+        newPassword: 'my_new_password',
+      })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Неверный код восстановления',
+      statusCode: 400,
+    })
+  })
 })

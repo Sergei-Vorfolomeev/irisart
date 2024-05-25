@@ -14,6 +14,7 @@ import { EmailAdapter } from '../../../../base/adapters/email.adapter'
 import { templateForRegistration } from '../../../../base/utils/template-for-registration'
 import { randomUUID } from 'crypto'
 import { add } from 'date-fns/add'
+import { EmailConfirmation } from '../../../users/entities/email-confirmation'
 
 export class RegistrationCommand {
   constructor(
