@@ -11,6 +11,7 @@ export type UserDBModel = {
   updatedAt?: Date
   emailConfirmation?: EmailConfirmationType
   banInfo?: BanType
+  passwordRecovery?: PasswordRecoveryType
 }
 
 export type EmailConfirmationType = {
@@ -23,4 +24,11 @@ export type EmailConfirmationType = {
 type BanType = {
   status: boolean
   bannedAt: Date
+}
+
+type PasswordRecoveryType = {
+  userId: string
+  recoveryCode: string
+  expiredAt: Date
+  updatedAt: Date
 }

@@ -7,7 +7,7 @@ import { UsersRepository } from '../../../users/repositories/users.repository'
 import { randomUUID } from 'crypto'
 import { EmailAdapter } from '../../../../base/adapters/email.adapter'
 import { templateForPasswordRecovery } from '../../../../base/utils/template-for-password-recovery'
-import { PasswordRecovery } from '../../entities/password-recovery.entity'
+import { PasswordRecovery } from '../../../users/entities/password-recovery.entity'
 import { add } from 'date-fns/add'
 
 export class RecoverPasswordCommand {

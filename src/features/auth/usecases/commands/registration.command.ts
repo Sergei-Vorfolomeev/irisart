@@ -4,10 +4,6 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../../users/repositories/users.repository'
-import {
-  EmailConfirmationType,
-  UserDBModel,
-} from '../../../users/types/user-db.model'
 import { Roles } from '../../../users/types/roles.enum'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { EmailAdapter } from '../../../../base/adapters/email.adapter'
@@ -15,6 +11,7 @@ import { templateForRegistration } from '../../../../base/utils/template-for-reg
 import { randomUUID } from 'crypto'
 import { add } from 'date-fns/add'
 import { EmailConfirmation } from '../../../users/entities/email-confirmation'
+import { User } from '../../../users/entities/user.entity'
 
 export class RegistrationCommand {
   constructor(
@@ -61,29 +58,23 @@ export class RegistrationCommandHandler implements ICommandHandler {
       )
     }
 
-    const newUser: UserDBModel = {
-      id: randomUUID(),
-      login,
-      email,
-      password: hashedPassword,
-      role: Roles.user,
-    }
+    const newUser = new User()
+    newUser.login = login
+    newUser.email = email
+    newUser.password = hashedPassword
+    newUser.role = Roles.user
 
-    const emailConfirmation: EmailConfirmationType = {
-      userId: newUser.id,
-      isConfirmed: false,
-      confirmationCode: randomUUID(),
-      expirationDate: add(new Date(), {
-        hours: 1,
-        minutes: 30,
-      }),
-    }
+    const newEmailConfirmation = new EmailConfirmation()
+    newUser.emailConfirmation = newEmailConfirmation
+    newEmailConfirmation.isConfirmed = false
+    newEmailConfirmation.confirmationCode = randomUUID()
+    newEmailConfirmation.expirationDate = add(new Date(), {
+      hours: 1,
+      minutes: 30,
+    })
 
-    const createdUser = await this.usersRepository.create(
-      newUser,
-      emailConfirmation,
-    )
-    if (!createdUser) {
+    const savedUser = await this.usersRepository.save(newUser)
+    if (!savedUser) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка сохранения пользователя',
@@ -93,7 +84,7 @@ export class RegistrationCommandHandler implements ICommandHandler {
     const isSent = await this.emailAdapter.sendEmail(
       email,
       'IRISART | Подтверждение регистрации',
-      templateForRegistration(emailConfirmation.confirmationCode),
+      templateForRegistration(newEmailConfirmation.confirmationCode),
     )
     if (!isSent) {
       return new InterLayerObject(

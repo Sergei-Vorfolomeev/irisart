@@ -47,6 +47,12 @@ export class SetNewPasswordCommandHandler implements ICommandHandler {
     }
 
     const hashedNewPassword = await this.bcryptAdapter.generateHash(newPassword)
+    if (!hashedNewPassword) {
+      return new InterLayerObject(
+        StatusCode.ServerError,
+        'Ошибка хэширования пароля',
+      )
+    }
 
     user.password = hashedNewPassword
     const savedUser = await this.usersRepository.save(user)

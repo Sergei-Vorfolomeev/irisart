@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { UsersRepository } from '../../features/users/repositories/users.repository'
 import { ConfigType } from '../../settings/configuration'
 import { CryptoAdapter } from './crypto.adapter'
-import { TokensPayloadType } from '../../features/auth/types/tokens-payload.type'
+import { TokensPayload } from '../../features/auth/types/tokens-payload.type'
 import { User } from '../../features/users/entities/user.entity'
 import { ConfigService } from '@nestjs/config'
 
@@ -25,7 +25,7 @@ export class JwtAdapter {
     })
   }
 
-  createToken(user: User, type: 'access' | 'refresh'): string {
+  createToken(user: User, type: 'access' | 'refresh'): string | null {
     try {
       const secretKey =
         type === 'access' ? this.secretKeyOne : this.secretKeyTwo
@@ -58,20 +58,26 @@ export class JwtAdapter {
 
   async generateTokens(
     user: User,
-  ): Promise<(TokensPayloadType & { encryptedRefreshToken: string }) | null> {
+  ): Promise<(TokensPayload & { encryptedRefreshToken: string }) | null> {
     const accessToken = this.createToken(user, 'access')
     const refreshToken = this.createToken(user, 'refresh')
+    if (!accessToken || !refreshToken) {
+      return null
+    }
     const encryptedRefreshToken = this.cryptoAdapter.encrypt(refreshToken)
     return { accessToken, refreshToken, encryptedRefreshToken }
   }
 
-  async verifyRefreshToken(refreshToken: string) {
+  async verifyRefreshToken(refreshToken: string | null): Promise<User | null> {
+    if (!refreshToken) {
+      return null
+    }
     const payload = await this.verifyToken(refreshToken, 'refresh')
     if (!payload) {
       return null
     }
     const user = await this.usersRepository.getById(payload.userId)
-    if (!user) {
+    if (!user || !user.refreshToken) {
       return null
     }
     const decryptedRefreshToken = this.cryptoAdapter.decrypt(user.refreshToken)

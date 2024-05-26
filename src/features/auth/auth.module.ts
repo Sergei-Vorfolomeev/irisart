@@ -11,9 +11,8 @@ import { ConfirmEmailCommandHandler } from './usecases/commands/confirm-email.co
 import { ResendCodeCommandHandler } from './usecases/commands/resend-code.command'
 import { LogoutCommandHandler } from './usecases/commands/logout.command'
 import { RecoverPasswordCommandHandler } from './usecases/commands/recover-password.command'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { PasswordRecovery } from './entities/password-recovery.entity'
 import { SetNewPasswordCommandHandler } from './usecases/commands/set-new-password.command'
+import { UpdateTokensCommandHandler } from './usecases/commands/update-tokens.command'
 
 const authUseCases = [
   RegistrationCommandHandler,
@@ -23,14 +22,11 @@ const authUseCases = [
   LogoutCommandHandler,
   RecoverPasswordCommandHandler,
   SetNewPasswordCommandHandler,
+  UpdateTokensCommandHandler,
 ]
 
 @Module({
-  imports: [
-    CqrsModule,
-    UsersModule,
-    TypeOrmModule.forFeature([PasswordRecovery]),
-  ],
+  imports: [CqrsModule, UsersModule],
   providers: [...authUseCases, EmailAdapter, JwtAdapter, CryptoAdapter],
   controllers: [AuthController],
   exports: [],

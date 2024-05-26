@@ -102,18 +102,18 @@ export class UsersController {
     return bannedUser
   }
 
-  @Delete(':id')
-  @HttpCode(204)
-  async deleteUser(@Param() userId: string) {
-    const command = new DeleteUserCommand(userId)
-    const { statusCode, error } = await this.commandBus.execute(command)
-    handleExceptions(statusCode, error)
-  }
-
   @Delete('banned/:id')
   @HttpCode(204)
   async unbanUser(@Param('id') userId: string) {
     const command = new UnbanUserCommand(userId)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteUser(@Param() userId: string) {
+    const command = new DeleteUserCommand(userId)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
   }

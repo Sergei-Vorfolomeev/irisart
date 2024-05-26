@@ -9,10 +9,10 @@ export class EmailConfirmation {
   @Column({ default: false })
   isConfirmed: boolean
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', nullable: true })
   confirmationCode: string
 
-  @Column()
+  @Column({ nullable: true })
   expirationDate: Date
 
   @OneToOne(() => User, (user) => user.id)

@@ -18,7 +18,7 @@ import { AuthModule } from './features/auth/auth.module'
       inject: [ConfigService],
       useFactory: (configService: ConfigService<ConfigType, true>) => ({
         type: 'postgres',
-        host: 'localhost',
+        host: configService.get('db.host', { infer: true }),
         port: configService.get('db.port', { infer: true }),
         username: configService.get('db.username', { infer: true }),
         password: configService.get('db.password', { infer: true }),

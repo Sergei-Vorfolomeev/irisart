@@ -1,6 +1,6 @@
 export type BanDBModel = {
   userId: string
-  banStatus: boolean
-  banReason: string | null
+  status: boolean
+  reason: string | null
   bannedAt: Date
 }

@@ -17,6 +17,7 @@ import { GetBannedUserByIdQueryHandler } from './usecases/queries/get-banned-use
 import { GetUserByIdQueryHandler } from './usecases/queries/get-user-by-id.query'
 import { Mapper } from '../../base/utils/mapper'
 import { EmailConfirmation } from './entities/email-confirmation'
+import { PasswordRecovery } from './entities/password-recovery.entity'
 
 const usersUseCases = [
   GetUsersQueryHandler,
@@ -32,7 +33,7 @@ const usersUseCases = [
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Ban, EmailConfirmation]),
+    TypeOrmModule.forFeature([User, Ban, EmailConfirmation, PasswordRecovery]),
     CqrsModule,
   ],
   providers: [

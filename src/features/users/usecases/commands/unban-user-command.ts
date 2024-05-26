@@ -13,24 +13,30 @@ export class UnbanUserCommand {
 export class UnbanUserCommandHandler implements ICommandHandler {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(command: UnbanUserCommand): Promise<InterLayerObject> {
-    debugger
-    const bannedUser = await this.usersRepository.getBannedUserById(
-      command.userId,
-    )
-    if (!bannedUser) {
+  async execute({ userId }: UnbanUserCommand): Promise<InterLayerObject> {
+    const user = await this.usersRepository.getById(userId)
+    if (!user) {
+      return new InterLayerObject(
+        StatusCode.NotFound,
+        'Пользователь с текущим id не найден',
+      )
+    }
+    if (!user.banInfo || !user.banInfo.status) {
       return new InterLayerObject(
         StatusCode.NotFound,
         'Заблокированный пользователь с текущим id не найден',
       )
     }
-    const isUnbanned = await this.usersRepository.unbanUser(command.userId)
-    if (!isUnbanned) {
+
+    user.banInfo.status = false
+    const savedUser = await this.usersRepository.save(user)
+    if (!savedUser) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка разблокировки пользователя',
       )
     }
+
     return new InterLayerObject(StatusCode.NoContent)
   }
 }

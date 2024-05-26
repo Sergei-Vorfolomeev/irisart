@@ -3,5 +3,5 @@ import { Trim } from './trim.decorator'
 import { applyDecorators } from '@nestjs/common'
 
 export const IsValidString = () => {
-  return applyDecorators(Trim(), IsNotEmpty(), IsString())
+  return applyDecorators(IsNotEmpty(), IsString(), Trim())
 }
