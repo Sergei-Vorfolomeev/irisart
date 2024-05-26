@@ -142,10 +142,12 @@ describe('UsersController (e2e)', () => {
       login: user.login,
       email: user.email,
       role: user.role,
-      banStatus: true,
       createdAt: expect.any(String),
-      banReason: "It's a test block. Actually he's a good boy!",
-      bannedAt: expect.any(String),
+      banInfo: {
+        status: true,
+        reason: "It's a test block. Actually he's a good boy!",
+        bannedAt: expect.any(String),
+      },
     })
   })
 
@@ -160,10 +162,12 @@ describe('UsersController (e2e)', () => {
         login: user.login,
         email: user.email,
         role: user.role,
-        banStatus: true,
         createdAt: expect.any(String),
-        banReason: "It's a test block. Actually he's a good boy!",
-        bannedAt: expect.any(String),
+        banInfo: {
+          status: true,
+          reason: "It's a test block. Actually he's a good boy!",
+          bannedAt: expect.any(String),
+        },
       },
     ])
   })
@@ -178,16 +182,18 @@ describe('UsersController (e2e)', () => {
       login: user.login,
       email: user.email,
       role: user.role,
-      banStatus: true,
       createdAt: expect.any(String),
-      banReason: "It's a test block. Actually he's a good boy!",
-      bannedAt: expect.any(String),
+      banInfo: {
+        status: true,
+        reason: "It's a test block. Actually he's a good boy!",
+        bannedAt: expect.any(String),
+      },
     })
   })
 
   it('get blocked user with wrong id', async () => {
     const { body } = await request(httpServer)
-      .get(`${PATHS.users}/banned/5312875b-ab0f-4cf1-a9d4-ab2c5d6d40a4`)
+      .get(`${PATHS.users}/banned/01897252-72d5-491c-85d6-cdf97a1d5f2d`)
       .expect(404)
 
     expect(body).toEqual({

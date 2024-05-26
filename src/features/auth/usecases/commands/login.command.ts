@@ -6,7 +6,7 @@ import {
 import { UsersRepository } from '../../../users/repositories/users.repository'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
-import { TokensPayloadType } from '../../types/tokens-payload.type'
+import { TokensPayload } from '../../types/tokens-payload.type'
 
 export class LoginCommand {
   constructor(
@@ -26,7 +26,7 @@ export class LoginCommandHandler implements ICommandHandler {
   async execute({
     loginOrEmail,
     password,
-  }: LoginCommand): Promise<InterLayerObject<TokensPayloadType>> {
+  }: LoginCommand): Promise<InterLayerObject<TokensPayload>> {
     const user = await this.usersRepository.findUserByLoginOrEmail(loginOrEmail)
     if (!user) {
       return new InterLayerObject(
@@ -63,7 +63,7 @@ export class LoginCommandHandler implements ICommandHandler {
       )
     }
 
-    return new InterLayerObject<TokensPayloadType>(StatusCode.Success, null, {
+    return new InterLayerObject<TokensPayload>(StatusCode.Success, null, {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     })

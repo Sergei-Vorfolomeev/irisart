@@ -15,10 +15,11 @@ const IV = crypto.randomBytes(16) // 128 бит
 
 const config = () => ({
   env: process.env.NODE_ENV,
-  port: parseInt(process.env.PORT) || 5000,
+  port: (process.env.PORT && Number(process.env.PORT)) || 5000,
   db: {
     name: process.env.DB_NAME,
     port: process.env.DB_PORT,
+    host: process.env.DB_HOST,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
   },

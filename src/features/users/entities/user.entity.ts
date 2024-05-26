@@ -9,7 +9,7 @@ import {
 import { Roles } from '../types/roles.enum'
 import { Ban } from './ban.entity'
 import { EmailConfirmation } from './email-confirmation'
-import { PasswordRecovery } from '../../auth/entities/password-recovery.entity'
+import { PasswordRecovery } from './password-recovery.entity'
 
 @Entity('users')
 export class User {
@@ -25,8 +25,8 @@ export class User {
   @Column()
   password: string
 
-  @Column({ nullable: true })
-  refreshToken: string
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken: string | null
 
   @Column({ enum: Roles, default: Roles.user })
   role: Roles
@@ -50,6 +50,7 @@ export class User {
   passwordRecovery: PasswordRecovery
 
   @OneToOne(() => Ban, (ban) => ban.user, {
+    cascade: true,
     onDelete: 'CASCADE',
   })
   banInfo: Ban

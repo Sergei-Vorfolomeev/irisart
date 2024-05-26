@@ -1,12 +1,11 @@
-import { UserDBModel } from '../../features/users/types/user-db.model'
 import { UserViewModel } from '../../features/users/dto/user.view.model'
 import { Injectable } from '@nestjs/common'
-import { BanDBModel } from '../../features/users/types/ban-db.model'
 import { UserBanViewModel } from '../../features/users/dto/user-ban.view.model'
+import { User } from '../../features/users/entities/user.entity'
 
 @Injectable()
 export class Mapper {
-  mapUserToView(user: UserDBModel & { banStatus: boolean }): UserViewModel {
+  mapUserToView(user: User & { banStatus: boolean }): UserViewModel {
     return {
       id: user.id,
       email: user.email,
@@ -17,18 +16,18 @@ export class Mapper {
     }
   }
 
-  mapBannedUserToView(
-    user: UserDBModel & Omit<BanDBModel, 'userId'>,
-  ): UserBanViewModel {
+  mapBannedUserToView(user: User): UserBanViewModel {
     return {
       id: user.id,
       email: user.email,
       login: user.login,
       role: user.role,
       createdAt: user.createdAt,
-      banStatus: user.banStatus ?? false,
-      banReason: user.banReason,
-      bannedAt: user.bannedAt,
+      banInfo: {
+        status: user.banInfo?.status ?? false,
+        reason: user.banInfo?.reason,
+        bannedAt: user.banInfo.bannedAt,
+      },
     }
   }
 }

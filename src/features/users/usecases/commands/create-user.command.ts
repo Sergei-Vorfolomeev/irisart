@@ -1,14 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
-import { EmailConfirmationType, UserDBModel } from '../../types/user-db.model'
 import { UsersRepository } from '../../repositories/users.repository'
 import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { Roles } from '../../types/roles.enum'
-import { randomUUID } from 'crypto'
-import { add } from 'date-fns/add'
+import { User } from '../../entities/user.entity'
+import { EmailConfirmation } from '../../entities/email-confirmation'
 
 export class CreateUserCommand {
   constructor(
@@ -56,33 +55,24 @@ export class CreateUserCommandHandler
         'Ошибка хэширования пароля',
       )
     }
-    const newUser: UserDBModel = {
-      id: randomUUID(),
-      login,
-      email,
-      password: hashedPassword,
-      role,
-    }
 
-    const emailConfirmation: EmailConfirmationType = {
-      userId: newUser.id,
-      isConfirmed: true,
-      confirmationCode: randomUUID(),
-      expirationDate: add(new Date(), {
-        hours: 1,
-        minutes: 30,
-      }),
-    }
-    const createdUserId = await this.usersRepository.create(
-      newUser,
-      emailConfirmation,
-    )
-    if (!createdUserId) {
+    const newUser = new User()
+    newUser.login = login
+    newUser.email = email
+    newUser.password = hashedPassword
+    newUser.role = role
+
+    const newEmailConfirmation = new EmailConfirmation()
+    newEmailConfirmation.user = newUser
+    newEmailConfirmation.isConfirmed = true
+
+    const savedUser = await this.usersRepository.save(newUser)
+    if (!savedUser) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка сохранения пользователя',
       )
     }
-    return new InterLayerObject<string>(StatusCode.Created, null, createdUserId)
+    return new InterLayerObject<string>(StatusCode.Created, null, savedUser.id)
   }
 }

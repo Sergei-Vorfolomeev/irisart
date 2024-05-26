@@ -118,6 +118,10 @@ describe('AuthController (e2e)', () => {
       accessToken: expect.any(String),
     })
     expect(body.accessToken).toContain('.')
+
+    const user = await usersRepository.findUserByLoginOrEmail('test@gmail.com')
+    expect(user).not.toBeNull()
+    expect(user?.refreshToken).not.toBeNull()
   })
 
   it('resend confirmation code with wrong email', async () => {
@@ -179,15 +183,8 @@ describe('AuthController (e2e)', () => {
     })
   })
 
-  it('logout', async () => {
-    await request(httpServer)
-      .post(`${PATHS.auth}/sign-out`)
-      .set('Cookie', `refreshToken=${validRefreshToken}`)
-      .expect(204)
-  })
-
   it('request to recover password', async () => {
-    let previousRecoveryCode: string
+    let previousRecoveryCode: string | null = null
     if (user.passwordRecovery) {
       previousRecoveryCode = user.passwordRecovery.recoveryCode
     }
@@ -204,21 +201,6 @@ describe('AuthController (e2e)', () => {
     expect(user.passwordRecovery.recoveryCode).not.toBe(previousRecoveryCode)
   })
 
-  it('successfully setting new password', async () => {
-    const previousPassword = user.password
-
-    await request(httpServer)
-      .post(`${PATHS.auth}/set-new-password`)
-      .send({
-        recoveryCode: user.passwordRecovery.recoveryCode,
-        newPassword: 'my_new_password',
-      })
-      .expect(204)
-
-    user = await usersRepository.findUserByLoginOrEmail(user.email)
-    expect(user.password).not.toBe(previousPassword)
-  })
-
   it('setting new password with incorrect recovery code', async () => {
     const { body } = await request(httpServer)
       .post(`${PATHS.auth}/set-new-password`)
@@ -232,6 +214,92 @@ describe('AuthController (e2e)', () => {
       error: 'Bad Request',
       message: 'Неверный код восстановления',
       statusCode: 400,
+    })
+  })
+
+  let previousPassword: string
+  it('successfully setting new password', async () => {
+    previousPassword = user.password
+
+    await request(httpServer)
+      .post(`${PATHS.auth}/set-new-password`)
+      .send({
+        recoveryCode: user.passwordRecovery.recoveryCode,
+        newPassword: 'my_new_password',
+      })
+      .expect(204)
+
+    user = await usersRepository.findUserByLoginOrEmail(user.email)
+    expect(user.password).not.toBe(previousPassword)
+  })
+
+  it('try to login with old password', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.auth}/sign-in`)
+      .send({
+        email: user.email,
+        password: previousPassword,
+      })
+      .expect(401)
+
+    expect(body).toEqual({
+      error: 'Unauthorized',
+      message: 'Неверный логин, email или пароль',
+      statusCode: 401,
+    })
+  })
+
+  let invalidRefreshToken: string
+  it('successful updating tokens', async () => {
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(1)
+      }, 1000)
+    })
+
+    const { body, headers } = await request(httpServer)
+      .post(`${PATHS.auth}/update-tokens`)
+      .set('Cookie', `refreshToken=${validRefreshToken}`)
+      .expect(200)
+
+    expect(body).toEqual({
+      accessToken: expect.any(String),
+    })
+    expect(body.accessToken).toContain('.')
+
+    invalidRefreshToken = validRefreshToken
+    const cookieHeader = headers['set-cookie']
+    validRefreshToken = cookieHeader[0].split(';')[0].split('=')[1]
+
+    expect(validRefreshToken).toBeDefined()
+    expect(validRefreshToken).toEqual(expect.any(String))
+    expect(validRefreshToken).toContain('.')
+    expect(validRefreshToken).not.toBe(invalidRefreshToken)
+  })
+
+  it('refresh all tokens with invalid refresh token', async () => {
+    await request(httpServer)
+      .post(`${PATHS.auth}/update-tokens`)
+      .set('Cookie', `refreshToken=${invalidRefreshToken}`)
+      .expect(401)
+  })
+
+  it('logout', async () => {
+    await request(httpServer)
+      .post(`${PATHS.auth}/sign-out`)
+      .set('Cookie', `refreshToken=${validRefreshToken}`)
+      .expect(204)
+  })
+
+  it('try to refresh tokens after logout', async () => {
+    const { body } = await request(httpServer)
+      .post(`${PATHS.auth}/update-tokens`)
+      .set('Cookie', `refreshToken=${validRefreshToken}`)
+      .expect(401)
+
+    expect(body).toEqual({
+      message: 'Unauthorized',
+      statusCode: 401,
     })
   })
 })

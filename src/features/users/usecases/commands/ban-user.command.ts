@@ -4,7 +4,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../repositories/users.repository'
-import { BanDBModel } from '../../types/ban-db.model'
+import { Ban } from '../../entities/ban.entity'
 
 export class BanUserCommand {
   constructor(
@@ -25,23 +25,27 @@ export class BanUserCommandHandler implements ICommandHandler {
         'Пользователь с текущим id не найден',
       )
     }
-    const newBan: BanDBModel = {
-      userId: command.userId,
-      banStatus: true,
-      banReason: command.banReason,
-      bannedAt: new Date(),
+
+    if (!user.banInfo) {
+      user.banInfo = new Ban()
+      user.banInfo.user = user
     }
-    const createdBan = await this.usersRepository.banUser(newBan)
-    if (!createdBan) {
+
+    user.banInfo.status = true
+    user.banInfo.reason = command.banReason
+
+    const savedUser = await this.usersRepository.save(user)
+    if (!savedUser) {
       return new InterLayerObject(
         StatusCode.ServerError,
         'Ошибка блокировки пользователя',
       )
     }
+
     return new InterLayerObject<string>(
       StatusCode.Created,
       null,
-      createdBan.userId,
+      user.banInfo.userId,
     )
   }
 }

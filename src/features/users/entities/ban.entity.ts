@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { User } from './user.entity'
 
 @Entity('bans')
@@ -7,12 +14,12 @@ export class Ban {
   userId: string
 
   @Column({ default: false })
-  banStatus: boolean
+  status: boolean
 
   @Column({ nullable: true })
-  banReason: string
+  reason: string
 
-  @Column({ nullable: true })
+  @UpdateDateColumn({ nullable: true })
   bannedAt: Date
 
   @OneToOne(() => User, (user) => user.banInfo)

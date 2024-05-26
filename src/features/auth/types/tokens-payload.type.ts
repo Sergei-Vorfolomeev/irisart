@@ -1,4 +1,4 @@
-export type TokensPayloadType = {
+export type TokensPayload = {
   accessToken: string
   refreshToken: string
 }

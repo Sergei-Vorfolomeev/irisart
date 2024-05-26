@@ -2,10 +2,9 @@ import { IUsersRepository } from '../interfaces/users.repository.interface'
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm'
 import { DataSource, Repository } from 'typeorm'
 import { User } from '../entities/user.entity'
-import { EmailConfirmationType, UserDBModel } from '../types/user-db.model'
+import { EmailConfirmationType } from '../types/user-db.model'
 import { Injectable } from '@nestjs/common'
 import { Ban } from '../entities/ban.entity'
-import { BanDBModel } from '../types/ban-db.model'
 import { EmailConfirmation } from '../entities/email-confirmation'
 
 @Injectable()
@@ -19,17 +18,12 @@ export class UsersRepository implements IUsersRepository {
 
   async getById(userId: string): Promise<User | null> {
     try {
-      const userInArray = await this.usersOrmRepo.query(
-        `
-          select u.*, b."banStatus", b."banReason", b."bannedAt"    
-          from users as u
-          left join bans as b
-          on u.id = b."userId"
-          where u.id = $1
-        `,
-        [userId],
-      )
-      return userInArray[0]
+      return await this.usersOrmRepo.findOne({
+        relations: ['banInfo', 'emailConfirmation'],
+        where: {
+          id: userId,
+        },
+      })
     } catch (e) {
       console.error(e)
       return null
@@ -37,7 +31,7 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async create(
-    user: UserDBModel,
+    user: User,
     emailConfirmation: EmailConfirmationType,
   ): Promise<string | null> {
     try {
@@ -69,44 +63,6 @@ export class UsersRepository implements IUsersRepository {
     } catch (e) {
       console.error(e)
       return false
-    }
-  }
-
-  async banUser(ban: BanDBModel): Promise<Ban | null> {
-    try {
-      return await this.bansOrmRepo.save(ban)
-    } catch (e) {
-      console.error(e)
-      return null
-    }
-  }
-
-  async unbanUser(userId: string): Promise<boolean> {
-    try {
-      const res = await this.bansOrmRepo.delete({ userId })
-      return res.affected === 1
-    } catch (e) {
-      console.error(e)
-      return false
-    }
-  }
-
-  async getBannedUserById(userId: string): Promise<User | null> {
-    try {
-      const userInArray = await this.usersOrmRepo.query(
-        `
-          select u.*, b."banStatus", b."banReason", b."bannedAt" 
-          from users as u
-          left join bans as b
-          on u.id = b."userId"
-          where u.id = $1 and b."banStatus" = true
-      `,
-        [userId],
-      )
-      return userInArray[0]
-    } catch (e) {
-      console.error(e)
-      return null
     }
   }
 

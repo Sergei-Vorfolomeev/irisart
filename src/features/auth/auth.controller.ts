@@ -15,6 +15,7 @@ import { RecoverPasswordInputModel } from './dto/recover-password.input.model'
 import { RecoverPasswordCommand } from './usecases/commands/recover-password.command'
 import { SetNewPasswordInputModel } from './dto/set-new-password.input.model'
 import { SetNewPasswordCommand } from './usecases/commands/set-new-password.command'
+import { UpdateTokensCommand } from './usecases/commands/update-tokens.command'
 
 @Controller('auth')
 export class AuthController {
@@ -85,5 +86,24 @@ export class AuthController {
     const command = new SetNewPasswordCommand(recoveryCode, newPassword)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
+  }
+
+  @Post('update-tokens')
+  @HttpCode(200)
+  async updateTokens(
+    @RefreshToken() refreshToken: string | null,
+    @Res() res: Response,
+  ) {
+    const command = new UpdateTokensCommand(refreshToken)
+    const { statusCode, error, data } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
+
+    res.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    })
+    res.send({
+      accessToken: data.accessToken,
+    })
   }
 }
