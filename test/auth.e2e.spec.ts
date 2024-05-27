@@ -28,35 +28,18 @@ describe('AuthController (e2e)', () => {
     await request(httpServer)
       .post(`${PATHS.auth}/sign-up`)
       .send({
-        login: 'test',
+        userName: 'test',
         email: 'test@gmail.com',
         password: '123456',
       })
       .expect(204)
   })
 
-  it('registration with existing login', async () => {
-    const { body } = await request(httpServer)
-      .post(`${PATHS.auth}/sign-up`)
-      .send({
-        login: 'test',
-        email: 'test1@gmail.com',
-        password: '123456',
-      })
-      .expect(400)
-
-    expect(body).toEqual({
-      error: 'Bad Request',
-      message: 'Пользователь с указанным логином уже существует',
-      statusCode: 400,
-    })
-  })
-
   it('registration with existing email', async () => {
     const { body } = await request(httpServer)
       .post(`${PATHS.auth}/sign-up`)
       .send({
-        login: 'wrong login',
+        userName: 'userName',
         email: 'test@gmail.com',
         password: '123456',
       })
@@ -73,7 +56,7 @@ describe('AuthController (e2e)', () => {
     const { body } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
-        loginOrEmail: 'test@gmail.com',
+        email: 'test@gmail.com',
         password: 'wrong password',
       })
       .expect(401)
@@ -89,7 +72,7 @@ describe('AuthController (e2e)', () => {
     const { body } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
-        loginOrEmail: 'wrongMail@gmail.com',
+        email: 'wrongMail@gmail.com',
         password: '123456',
       })
       .expect(401)
@@ -106,7 +89,7 @@ describe('AuthController (e2e)', () => {
     const { body, headers } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
-        loginOrEmail: 'test@gmail.com',
+        email: 'test@gmail.com',
         password: '123456',
       })
       .expect(200)
@@ -119,7 +102,7 @@ describe('AuthController (e2e)', () => {
     })
     expect(body.accessToken).toContain('.')
 
-    const user = await usersRepository.findUserByLoginOrEmail('test@gmail.com')
+    const user = await usersRepository.findUserByEmail('test@gmail.com')
     expect(user).not.toBeNull()
     expect(user?.refreshToken).not.toBeNull()
   })
@@ -141,7 +124,7 @@ describe('AuthController (e2e)', () => {
 
   let user: any
   it('successfully resend confirmation code', async () => {
-    user = await usersRepository.findUserByLoginOrEmail('test')
+    user = await usersRepository.findUserByEmail('test@gmail.com')
     const previousCode = user.emailConfirmation.confirmationCode
 
     await request(httpServer)
@@ -151,7 +134,7 @@ describe('AuthController (e2e)', () => {
       })
       .expect(204)
 
-    user = await usersRepository.findUserByLoginOrEmail('test')
+    user = await usersRepository.findUserByEmail(user.email)
     expect(user.emailConfirmation.confirmationCode).not.toBe(previousCode)
   })
 
@@ -163,7 +146,7 @@ describe('AuthController (e2e)', () => {
       })
       .expect(204)
 
-    user = await usersRepository.findUserByLoginOrEmail('test')
+    user = await usersRepository.findUserByEmail(user.email)
 
     expect(user.emailConfirmation.isConfirmed).toBe(true)
   })
@@ -196,7 +179,7 @@ describe('AuthController (e2e)', () => {
       })
       .expect(204)
 
-    user = await usersRepository.findUserByLoginOrEmail(user.email)
+    user = await usersRepository.findUserByEmail(user.email)
     expect(user.passwordRecovery.recoveryCode).not.toBe(null)
     expect(user.passwordRecovery.recoveryCode).not.toBe(previousRecoveryCode)
   })
@@ -229,7 +212,7 @@ describe('AuthController (e2e)', () => {
       })
       .expect(204)
 
-    user = await usersRepository.findUserByLoginOrEmail(user.email)
+    user = await usersRepository.findUserByEmail(user.email)
     expect(user.password).not.toBe(previousPassword)
   })
 

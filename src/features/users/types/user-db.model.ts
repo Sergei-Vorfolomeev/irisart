@@ -2,7 +2,7 @@ import { Roles } from './roles.enum'
 
 export type UserDBModel = {
   id: string
-  login: string
+  userName: string
   email: string
   password: string
   refreshToken?: string | null

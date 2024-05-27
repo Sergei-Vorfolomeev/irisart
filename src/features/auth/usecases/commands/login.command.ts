@@ -10,7 +10,7 @@ import { TokensPayload } from '../../types/tokens-payload.type'
 
 export class LoginCommand {
   constructor(
-    public loginOrEmail: string,
+    public email: string,
     public password: string,
   ) {}
 }
@@ -24,10 +24,10 @@ export class LoginCommandHandler implements ICommandHandler {
   ) {}
 
   async execute({
-    loginOrEmail,
+    email,
     password,
   }: LoginCommand): Promise<InterLayerObject<TokensPayload>> {
-    const user = await this.usersRepository.findUserByLoginOrEmail(loginOrEmail)
+    const user = await this.usersRepository.findUserByEmail(email)
     if (!user) {
       return new InterLayerObject(
         StatusCode.Unauthorized,

@@ -22,7 +22,7 @@ export class RecoverPasswordCommandHandler implements ICommandHandler {
   ) {}
 
   async execute({ email }: RecoverPasswordCommand): Promise<InterLayerObject> {
-    const user = await this.usersRepository.findUserByLoginOrEmail(email)
+    const user = await this.usersRepository.findUserByEmail(email)
     if (!user) {
       return new InterLayerObject(StatusCode.NoContent)
     }

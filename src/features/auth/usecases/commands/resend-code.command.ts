@@ -21,7 +21,7 @@ export class ResendCodeCommandHandler implements ICommandHandler {
   ) {}
 
   async execute({ email }: ResendCodeCommand): Promise<InterLayerObject> {
-    const user = await this.usersRepository.findUserByLoginOrEmail(email)
+    const user = await this.usersRepository.findUserByEmail(email)
     if (!user) {
       return new InterLayerObject(
         StatusCode.BadRequest,

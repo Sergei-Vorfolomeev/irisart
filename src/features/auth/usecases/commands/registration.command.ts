@@ -15,7 +15,7 @@ import { User } from '../../../users/entities/user.entity'
 
 export class RegistrationCommand {
   constructor(
-    public login: string,
+    public userName: string,
     public email: string,
     public password: string,
   ) {}
@@ -30,20 +30,12 @@ export class RegistrationCommandHandler implements ICommandHandler {
   ) {}
 
   async execute({
-    login,
+    userName,
     email,
     password,
   }: RegistrationCommand): Promise<InterLayerObject> {
-    const userByLogin = await this.usersRepository.findUserByLoginOrEmail(login)
-    if (userByLogin) {
-      return new InterLayerObject(
-        StatusCode.BadRequest,
-        'Пользователь с указанным логином уже существует',
-      )
-    }
-
-    const userByEmail = await this.usersRepository.findUserByLoginOrEmail(email)
-    if (userByEmail) {
+    const user = await this.usersRepository.findUserByEmail(email)
+    if (user) {
       return new InterLayerObject(
         StatusCode.BadRequest,
         'Пользователь с указанным почтовым ящиком уже существует',
@@ -59,7 +51,7 @@ export class RegistrationCommandHandler implements ICommandHandler {
     }
 
     const newUser = new User()
-    newUser.login = login
+    newUser.userName = userName
     newUser.email = email
     newUser.password = hashedPassword
     newUser.role = Roles.user

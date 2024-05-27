@@ -17,9 +17,9 @@ export class User {
   id: string
 
   @Column()
-  login: string
+  userName: string
 
-  @Column()
+  @Column({ unique: true })
   email: string
 
   @Column()

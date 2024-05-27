@@ -9,7 +9,7 @@ export class Mapper {
     return {
       id: user.id,
       email: user.email,
-      login: user.login,
+      userName: user.userName,
       role: user.role,
       createdAt: user.createdAt,
       banStatus: user.banStatus ?? false,
@@ -20,7 +20,7 @@ export class Mapper {
     return {
       id: user.id,
       email: user.email,
-      login: user.login,
+      userName: user.userName,
       role: user.role,
       createdAt: user.createdAt,
       banInfo: {
