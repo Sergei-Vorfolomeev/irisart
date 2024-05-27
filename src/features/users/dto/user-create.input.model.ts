@@ -5,7 +5,7 @@ import { IsValidString } from '../../../infrastructure/decorators/is-valid-strin
 export class UserCreateInputModel {
   @Length(3, 30)
   @IsValidString()
-  login: string
+  userName: string
 
   @IsEmail()
   @IsValidString()

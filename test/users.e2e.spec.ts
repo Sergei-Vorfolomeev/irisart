@@ -36,7 +36,7 @@ describe('UsersController (e2e)', () => {
 
     expect(body).toEqual({
       message: [
-        'login should not be empty',
+        'userName should not be empty',
         'email must be an email',
         'password must be longer than or equal to 6 characters',
         'role must be one of the following values: user, admin',
@@ -51,7 +51,7 @@ describe('UsersController (e2e)', () => {
     const { body } = await request(httpServer)
       .post(PATHS.users)
       .send({
-        login: 'testLogin',
+        userName: 'userName',
         email: 'test@gmail.com',
         password: '123456',
         role: 'user',
@@ -62,7 +62,7 @@ describe('UsersController (e2e)', () => {
 
     expect(user).toEqual({
       id: expect.any(String),
-      login: 'testLogin',
+      userName: 'userName',
       email: 'test@gmail.com',
       role: 'user',
       createdAt: expect.any(String),
@@ -89,7 +89,7 @@ describe('UsersController (e2e)', () => {
 
     expect(body).toEqual({
       id: user.id,
-      login: user.login,
+      userName: user.userName,
       email: user.email,
       role: user.role,
       banStatus: false,
@@ -139,7 +139,7 @@ describe('UsersController (e2e)', () => {
 
     expect(body).toEqual({
       id: user.id,
-      login: user.login,
+      userName: user.userName,
       email: user.email,
       role: user.role,
       createdAt: expect.any(String),
@@ -159,7 +159,7 @@ describe('UsersController (e2e)', () => {
     expect(body).toEqual([
       {
         id: user.id,
-        login: user.login,
+        userName: user.userName,
         email: user.email,
         role: user.role,
         createdAt: expect.any(String),
@@ -179,7 +179,7 @@ describe('UsersController (e2e)', () => {
 
     expect(body).toEqual({
       id: user.id,
-      login: user.login,
+      userName: user.userName,
       email: user.email,
       role: user.role,
       createdAt: expect.any(String),

@@ -66,10 +66,10 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async findUserByLoginOrEmail(loginOrEmail: string): Promise<User | null> {
+  async findUserByEmail(email: string): Promise<User | null> {
     try {
       return await this.usersOrmRepo.findOne({
-        where: [{ login: loginOrEmail }, { email: loginOrEmail }],
+        where: [{ email: email }],
         relations: ['emailConfirmation', 'banInfo', 'passwordRecovery'],
       })
     } catch (e) {

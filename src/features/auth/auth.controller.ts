@@ -16,6 +16,7 @@ import { RecoverPasswordCommand } from './usecases/commands/recover-password.com
 import { SetNewPasswordInputModel } from './dto/set-new-password.input.model'
 import { SetNewPasswordCommand } from './usecases/commands/set-new-password.command'
 import { UpdateTokensCommand } from './usecases/commands/update-tokens.command'
+import { LoginInputModel } from './dto/login.input.model'
 
 @Controller('auth')
 export class AuthController {
@@ -24,17 +25,20 @@ export class AuthController {
   @Post('sign-up')
   @HttpCode(204)
   async registration(
-    @Body() { login, email, password }: RegistrationInputModel,
+    @Body() { userName, email, password }: RegistrationInputModel,
   ) {
-    const command = new RegistrationCommand(login, email, password)
+    const command = new RegistrationCommand(userName, email, password)
     const { statusCode, error } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
   }
 
   @Post('sign-in')
   @HttpCode(200)
-  async login(@Body() { loginOrEmail, password }, @Res() res: Response) {
-    const command = new LoginCommand(loginOrEmail, password)
+  async login(
+    @Body() { email, password }: LoginInputModel,
+    @Res() res: Response,
+  ) {
+    const command = new LoginCommand(email, password)
     const { statusCode, error, data } = await this.commandBus.execute(command)
     handleExceptions(statusCode, error)
     res.cookie('refreshToken', data.refreshToken, {
@@ -91,7 +95,7 @@ export class AuthController {
   @Post('update-tokens')
   @HttpCode(200)
   async updateTokens(
-    @RefreshToken() refreshToken: string | null,
+    @RefreshToken() refreshToken: string,
     @Res() res: Response,
   ) {
     const command = new UpdateTokensCommand(refreshToken)

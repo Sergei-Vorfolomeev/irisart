@@ -62,8 +62,8 @@ export class UsersController {
   @Post()
   @HttpCode(201)
   async createUser(@Body() body: UserCreateInputModel) {
-    const { login, email, password, role } = body
-    const command = new CreateUserCommand(login, email, password, role)
+    const { userName, email, password, role } = body
+    const command = new CreateUserCommand(userName, email, password, role)
     const {
       statusCode,
       error,

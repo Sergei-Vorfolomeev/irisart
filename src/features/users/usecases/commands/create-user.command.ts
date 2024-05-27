@@ -11,7 +11,7 @@ import { EmailConfirmation } from '../../entities/email-confirmation'
 
 export class CreateUserCommand {
   constructor(
-    public login: string,
+    public userName: string,
     public email: string,
     public password: string,
     public role: Roles,
@@ -28,20 +28,12 @@ export class CreateUserCommandHandler
   ) {}
 
   async execute({
-    login,
+    userName,
     email,
     password,
     role,
   }: CreateUserCommand): Promise<InterLayerObject<string>> {
-    const userByLogin = await this.usersRepository.findUserByLoginOrEmail(login)
-    if (userByLogin) {
-      return new InterLayerObject(
-        StatusCode.BadRequest,
-        'Пользователь с указанным логином уже существует',
-      )
-    }
-
-    const userByEmail = await this.usersRepository.findUserByLoginOrEmail(email)
+    const userByEmail = await this.usersRepository.findUserByEmail(email)
     if (userByEmail) {
       return new InterLayerObject(
         StatusCode.BadRequest,
@@ -57,7 +49,7 @@ export class CreateUserCommandHandler
     }
 
     const newUser = new User()
-    newUser.login = login
+    newUser.userName = userName
     newUser.email = email
     newUser.password = hashedPassword
     newUser.role = role

@@ -68,10 +68,7 @@ export class JwtAdapter {
     return { accessToken, refreshToken, encryptedRefreshToken }
   }
 
-  async verifyRefreshToken(refreshToken: string | null): Promise<User | null> {
-    if (!refreshToken) {
-      return null
-    }
+  async verifyRefreshToken(refreshToken: string): Promise<User | null> {
     const payload = await this.verifyToken(refreshToken, 'refresh')
     if (!payload) {
       return null

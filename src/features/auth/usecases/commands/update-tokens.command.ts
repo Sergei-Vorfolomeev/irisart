@@ -8,7 +8,7 @@ import { TokensPayload } from '../../types/tokens-payload.type'
 import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
 
 export class UpdateTokensCommand {
-  constructor(public refreshToken: string | null) {}
+  constructor(public refreshToken: string) {}
 }
 
 @CommandHandler(UpdateTokensCommand)
