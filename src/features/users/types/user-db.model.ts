@@ -17,7 +17,7 @@ export type UserDBModel = {
 export type EmailConfirmationType = {
   userId: string
   isConfirmed: boolean
-  confirmationCode: string
+  confirmationCode: number
   expirationDate: Date
 }
 

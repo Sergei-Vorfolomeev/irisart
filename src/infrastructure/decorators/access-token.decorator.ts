@@ -4,11 +4,11 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 
-export const RefreshToken = createParamDecorator(
+export const AccessToken = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string => {
     const request = ctx.switchToHttp().getRequest()
-    if (request.cookies.refreshToken) {
-      return request.cookies.refreshToken
+    if (request.cookies.accessToken) {
+      return request.cookies.accessToken
     } else {
       throw new UnauthorizedException()
     }

@@ -9,8 +9,8 @@ export class EmailConfirmation {
   @Column({ default: false })
   isConfirmed: boolean
 
-  @Column({ type: 'uuid', nullable: true })
-  confirmationCode: string
+  @Column({ nullable: true })
+  confirmationCode: number
 
   @Column({ nullable: true })
   expirationDate: Date

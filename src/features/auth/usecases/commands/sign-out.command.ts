@@ -6,18 +6,18 @@ import {
 import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
 import { UsersRepository } from '../../../users/repositories/users.repository'
 
-export class LogoutCommand {
+export class SignOutCommand {
   constructor(public refreshToken: string) {}
 }
 
-@CommandHandler(LogoutCommand)
-export class LogoutCommandHandler implements ICommandHandler {
+@CommandHandler(SignOutCommand)
+export class SignOutCommandHandler implements ICommandHandler {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly jwtAdapter: JwtAdapter,
   ) {}
 
-  async execute({ refreshToken }: LogoutCommand): Promise<InterLayerObject> {
+  async execute({ refreshToken }: SignOutCommand): Promise<InterLayerObject> {
     const user = await this.jwtAdapter.verifyRefreshToken(refreshToken)
     if (!user) {
       return new InterLayerObject(StatusCode.Unauthorized)

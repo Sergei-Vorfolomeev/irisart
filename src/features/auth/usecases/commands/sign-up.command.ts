@@ -8,12 +8,12 @@ import { Roles } from '../../../users/types/roles.enum'
 import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { EmailAdapter } from '../../../../base/adapters/email.adapter'
 import { templateForRegistration } from '../../../../base/utils/template-for-registration'
-import { randomUUID } from 'crypto'
 import { add } from 'date-fns/add'
 import { EmailConfirmation } from '../../../users/entities/email-confirmation'
 import { User } from '../../../users/entities/user.entity'
+import { generateRandomFourDigitNumber } from '../../../../base/utils/generate-random-code'
 
-export class RegistrationCommand {
+export class SignUpCommand {
   constructor(
     public userName: string,
     public email: string,
@@ -21,8 +21,8 @@ export class RegistrationCommand {
   ) {}
 }
 
-@CommandHandler(RegistrationCommand)
-export class RegistrationCommandHandler implements ICommandHandler {
+@CommandHandler(SignUpCommand)
+export class SignUpCommandHandler implements ICommandHandler {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly bcryptAdapter: BcryptAdapter,
@@ -33,7 +33,7 @@ export class RegistrationCommandHandler implements ICommandHandler {
     userName,
     email,
     password,
-  }: RegistrationCommand): Promise<InterLayerObject> {
+  }: SignUpCommand): Promise<InterLayerObject> {
     const user = await this.usersRepository.findUserByEmail(email)
     if (user) {
       return new InterLayerObject(
@@ -59,7 +59,7 @@ export class RegistrationCommandHandler implements ICommandHandler {
     const newEmailConfirmation = new EmailConfirmation()
     newUser.emailConfirmation = newEmailConfirmation
     newEmailConfirmation.isConfirmed = false
-    newEmailConfirmation.confirmationCode = randomUUID()
+    newEmailConfirmation.confirmationCode = generateRandomFourDigitNumber()
     newEmailConfirmation.expirationDate = add(new Date(), {
       hours: 1,
       minutes: 30,

@@ -87,7 +87,7 @@ export class UsersRepository implements IUsersRepository {
     }
   }
 
-  async findByConfirmationCode(code: string): Promise<User | null> {
+  async findByConfirmationCode(code: number): Promise<User | null> {
     try {
       return await this.usersOrmRepo.findOne({
         relations: ['emailConfirmation'],
