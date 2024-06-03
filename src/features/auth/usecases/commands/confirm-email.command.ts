@@ -4,16 +4,19 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../../users/repositories/users.repository'
+import { User } from '../../../users/entities/user.entity'
 
 export class ConfirmEmailCommand {
-  constructor(public code: string) {}
+  constructor(public code: number) {}
 }
 
 @CommandHandler(ConfirmEmailCommand)
 export class ConfirmEmailCommandHandler implements ICommandHandler {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute({ code }: ConfirmEmailCommand): Promise<InterLayerObject> {
+  async execute({
+    code,
+  }: ConfirmEmailCommand): Promise<InterLayerObject<User>> {
     const user = await this.usersRepository.findByConfirmationCode(code)
     if (!user) {
       return new InterLayerObject(
@@ -46,6 +49,6 @@ export class ConfirmEmailCommandHandler implements ICommandHandler {
       )
     }
 
-    return new InterLayerObject(StatusCode.NoContent)
+    return new InterLayerObject(StatusCode.Success, null, user)
   }
 }

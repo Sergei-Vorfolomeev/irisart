@@ -8,15 +8,15 @@ import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
 import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
 import { TokensPayload } from '../../types/tokens-payload.type'
 
-export class LoginCommand {
+export class SignInCommand {
   constructor(
     public email: string,
     public password: string,
   ) {}
 }
 
-@CommandHandler(LoginCommand)
-export class LoginCommandHandler implements ICommandHandler {
+@CommandHandler(SignInCommand)
+export class SignInCommandHandler implements ICommandHandler {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly bcryptAdapter: BcryptAdapter,
@@ -26,7 +26,7 @@ export class LoginCommandHandler implements ICommandHandler {
   async execute({
     email,
     password,
-  }: LoginCommand): Promise<InterLayerObject<TokensPayload>> {
+  }: SignInCommand): Promise<InterLayerObject<TokensPayload>> {
     const user = await this.usersRepository.findUserByEmail(email)
     if (!user) {
       return new InterLayerObject(

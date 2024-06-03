@@ -85,8 +85,9 @@ describe('AuthController (e2e)', () => {
   })
 
   let validRefreshToken: string
+  let validAccessToken: string
   it('successfully login', async () => {
-    const { body, headers } = await request(httpServer)
+    const { headers } = await request(httpServer)
       .post(`${PATHS.auth}/sign-in`)
       .send({
         email: 'test@gmail.com',
@@ -95,12 +96,11 @@ describe('AuthController (e2e)', () => {
       .expect(200)
 
     const cookieHeader = headers['set-cookie']
-    validRefreshToken = cookieHeader[0].split(';')[0].split('=')[1]
+    validAccessToken = cookieHeader[0].split(';')[0].split('=')[1]
+    validRefreshToken = cookieHeader[1].split(';')[0].split('=')[1]
 
-    expect(body).toEqual({
-      accessToken: expect.any(String),
-    })
-    expect(body.accessToken).toContain('.')
+    expect(validRefreshToken).toContain('.')
+    expect(validAccessToken).toContain('.')
 
     const user = await usersRepository.findUserByEmail('test@gmail.com')
     expect(user).not.toBeNull()
@@ -233,6 +233,7 @@ describe('AuthController (e2e)', () => {
   })
 
   let invalidRefreshToken: string
+  let invalidAccessToken: string
   it('successful updating tokens', async () => {
     await new Promise((resolve) => {
       setTimeout(() => {
@@ -240,19 +241,21 @@ describe('AuthController (e2e)', () => {
       }, 1000)
     })
 
-    const { body, headers } = await request(httpServer)
+    const { headers } = await request(httpServer)
       .post(`${PATHS.auth}/update-tokens`)
       .set('Cookie', `refreshToken=${validRefreshToken}`)
       .expect(200)
 
-    expect(body).toEqual({
-      accessToken: expect.any(String),
-    })
-    expect(body.accessToken).toContain('.')
-
     invalidRefreshToken = validRefreshToken
+    invalidAccessToken = validAccessToken
     const cookieHeader = headers['set-cookie']
-    validRefreshToken = cookieHeader[0].split(';')[0].split('=')[1]
+    validAccessToken = cookieHeader[0].split(';')[0].split('=')[1]
+    validRefreshToken = cookieHeader[1].split(';')[0].split('=')[1]
+
+    expect(validAccessToken).toBeDefined()
+    expect(validAccessToken).toEqual(expect.any(String))
+    expect(validAccessToken).toContain('.')
+    expect(validAccessToken).not.toBe(invalidAccessToken)
 
     expect(validRefreshToken).toBeDefined()
     expect(validRefreshToken).toEqual(expect.any(String))

@@ -1,8 +1,7 @@
-import { IsUUID } from 'class-validator'
-import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
+import { IsInt, IsNotEmpty } from 'class-validator'
 
 export class ConfirmEmailInputModel {
-  @IsUUID()
-  @IsValidString()
-  code: string
+  @IsInt()
+  @IsNotEmpty()
+  code: number
 }

@@ -8,6 +8,7 @@ import { randomUUID } from 'crypto'
 import { add } from 'date-fns/add'
 import { EmailAdapter } from '../../../../base/adapters/email.adapter'
 import { templateForRegistration } from '../../../../base/utils/template-for-registration'
+import { generateRandomFourDigitNumber } from '../../../../base/utils/generate-random-code'
 
 export class ResendCodeCommand {
   constructor(public email: string) {}
@@ -36,7 +37,7 @@ export class ResendCodeCommandHandler implements ICommandHandler {
       )
     }
 
-    user.emailConfirmation.confirmationCode = randomUUID()
+    user.emailConfirmation.confirmationCode = generateRandomFourDigitNumber()
     user.emailConfirmation.expirationDate = add(new Date(), {
       hours: 1,
       minutes: 30,
