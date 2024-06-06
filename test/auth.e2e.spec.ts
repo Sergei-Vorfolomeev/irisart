@@ -107,6 +107,19 @@ describe('AuthController (e2e)', () => {
     expect(user?.refreshToken).not.toBeNull()
   })
 
+  it('successful me request', async () => {
+    const { body } = await request(httpServer)
+      .get(`${PATHS.auth}/me`)
+      .set('Cookie', `accessToken=${validAccessToken}`)
+      .expect(200)
+
+    expect(body).toEqual({
+      email: 'test@gmail.com',
+      userName: 'test',
+      userId: expect.any(String),
+    })
+  })
+
   it('resend confirmation code with wrong email', async () => {
     const { body } = await request(httpServer)
       .post(`${PATHS.auth}/resend-code`)

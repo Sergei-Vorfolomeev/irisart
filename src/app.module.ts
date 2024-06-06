@@ -4,6 +4,7 @@ import configuration, { ConfigType } from './settings/configuration'
 import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthModule } from './features/auth/auth.module'
+import { ProductsModule } from './features/products/products.module'
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthModule } from './features/auth/auth.module'
     }),
     UsersModule,
     AuthModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],

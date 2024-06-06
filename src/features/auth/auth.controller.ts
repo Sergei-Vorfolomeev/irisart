@@ -71,7 +71,7 @@ export class AuthController {
   }
 
   @Post('confirm-email')
-  @HttpCode(200)
+  @HttpCode(204)
   async confirmEmail(
     @Body('code', ParseIntPipe) code: number,
     @Res() res: Response,
@@ -104,7 +104,7 @@ export class AuthController {
       sameSite: 'strict',
       expires: add(Date.now(), { hours: 72 }),
     })
-    res.send({ email: user.email })
+    res.end()
   }
 
   @Post('resend-code')

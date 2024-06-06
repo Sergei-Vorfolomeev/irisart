@@ -3,9 +3,9 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { UsersRepository } from '../../../users/repositories/users.repository'
 import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
-import { MeOutputModel } from '../../dto/me.output.model'
+import { UsersQueryRepository } from '../../../users/repositories/users.query.repository'
+import { UserViewModel } from '../../../users/dto/user.view.model'
 
 export class MeQuery {
   constructor(public accessToken: string) {}
@@ -15,26 +15,22 @@ export class MeQuery {
 export class MeQueryHandler implements IQueryHandler {
   constructor(
     private readonly jwtAdapter: JwtAdapter,
-    private readonly usersRepository: UsersRepository,
+    private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
   async execute({
     accessToken,
-  }: MeQuery): Promise<InterLayerObject<MeOutputModel>> {
+  }: MeQuery): Promise<InterLayerObject<UserViewModel>> {
     const payload = await this.jwtAdapter.verifyToken(accessToken, 'access')
     if (!payload) {
       return new InterLayerObject(StatusCode.Unauthorized)
     }
 
-    const user = await this.usersRepository.getById(payload.userId)
+    const user = await this.usersQueryRepository.getById(payload.userId)
     if (!user) {
       return new InterLayerObject(StatusCode.Unauthorized)
     }
 
-    return new InterLayerObject<MeOutputModel>(StatusCode.Success, null, {
-      userName: user.userName,
-      email: user.email,
-      userId: user.id,
-    })
+    return new InterLayerObject<UserViewModel>(StatusCode.Success, null, user)
   }
 }
