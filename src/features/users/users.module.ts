@@ -44,6 +44,11 @@ const usersUseCases = [
     Mapper,
   ],
   controllers: [UsersController],
-  exports: [TypeOrmModule, UsersRepository, BcryptAdapter],
+  exports: [
+    TypeOrmModule,
+    UsersRepository,
+    UsersQueryRepository,
+    BcryptAdapter,
+  ],
 })
 export class UsersModule {}

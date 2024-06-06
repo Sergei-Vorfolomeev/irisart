@@ -32,6 +32,7 @@ export class JwtAdapter {
       return jwt.sign(
         {
           userId: user.id,
+          role: user.role,
         },
         secretKey,
         { expiresIn: type === 'access' ? '24h' : '72h' },
