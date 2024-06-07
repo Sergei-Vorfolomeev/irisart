@@ -1,11 +1,21 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common'
 import { ProductAddInputModel } from './dto/product-add.input.model'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { handleExceptions } from '../../base/utils/handle-exceptions'
 import { AddProductCommand } from './usecases/commands/add-product.command'
 import { GetProductByIdQuery } from './usecases/queries/get-product-by-id.query'
-import { GetAllProductsQuery } from './usecases/queries/get-all-products'
+import { GetAllProductsQuery } from './usecases/queries/get-all-products.query'
 import { GetAllProductsQueryParams } from './dto/get-all-products-query-params'
+import { DeleteProductCommand } from './usecases/commands/delete-product.command'
 
 @Controller('products')
 export class ProductsController {
@@ -15,10 +25,11 @@ export class ProductsController {
   ) {}
 
   @Get()
+  @HttpCode(200)
   async getAllProducts(
-    @Query() { term, type, offset, limit }: GetAllProductsQueryParams,
+    @Query() { term, category, offset, limit }: GetAllProductsQueryParams,
   ) {
-    const query = new GetAllProductsQuery(term, type, offset, limit)
+    const query = new GetAllProductsQuery(term, category, offset, limit)
     const {
       statusCode,
       error,
@@ -29,12 +40,13 @@ export class ProductsController {
   }
 
   @Post()
+  @HttpCode(201)
   async addProduct(@Body() product: ProductAddInputModel) {
-    const { name, description, type, price, image, isAvailable } = product
+    const { name, description, category, price, image, isAvailable } = product
     const command = new AddProductCommand(
       name,
       description,
-      type,
+      category,
       price,
       image,
       isAvailable,
@@ -54,5 +66,13 @@ export class ProductsController {
     } = await this.queryBus.execute(query)
     handleExceptions(code2, err2)
     return createdProduct
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteProduct(@Param('id') productId: string) {
+    const command = new DeleteProductCommand(productId)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
   }
 }

@@ -5,14 +5,14 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { ProductViewModel } from '../../dto/product.view.model'
-import { ProductsType } from '../../types/products-type.enum'
+import { ProductsCategory } from '../../types/products-type.enum'
 
 export class GetAllProductsQuery {
   constructor(
-    public term: string | undefined,
-    public type: ProductsType | undefined,
-    public offset: number | undefined,
-    public limit: number | undefined,
+    public term?: string,
+    public category?: ProductsCategory,
+    public offset?: number,
+    public limit?: number,
   ) {}
 }
 

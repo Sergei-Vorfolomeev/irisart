@@ -1,4 +1,4 @@
-import { ProductsType } from '../types/products-type.enum'
+import { ProductsCategory } from '../types/products-type.enum'
 import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
 import { IsEnum, IsInt, IsOptional } from 'class-validator'
 import { Type } from 'class-transformer'
@@ -8,9 +8,9 @@ export class GetAllProductsQueryParams {
   @IsOptional()
   term?: string
 
-  @IsEnum(ProductsType)
+  @IsEnum(ProductsCategory)
   @IsOptional()
-  type?: ProductsType
+  category?: ProductsCategory
 
   @IsInt()
   @IsOptional()

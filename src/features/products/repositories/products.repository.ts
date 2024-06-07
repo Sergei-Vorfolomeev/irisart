@@ -9,6 +9,29 @@ export class ProductsRepository {
     private readonly productsOrmRepo: Repository<Product>,
   ) {}
 
+  async getById(productId: string): Promise<Product | null> {
+    try {
+      return await this.productsOrmRepo.findOne({
+        where: {
+          id: productId,
+        },
+      })
+    } catch (e) {
+      console.error(e)
+      return null
+    }
+  }
+
+  async deleteProduct(productId: string): Promise<boolean> {
+    try {
+      const res = await this.productsOrmRepo.delete(productId)
+      return res.affected === 1
+    } catch (e) {
+      console.error(e)
+      return false
+    }
+  }
+
   async addProduct(product: ProductDbModel): Promise<Product | null> {
     try {
       return await this.productsOrmRepo.save(product)
