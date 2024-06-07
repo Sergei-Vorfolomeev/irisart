@@ -3,7 +3,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { ProductsType } from '../../types/products-type.enum'
+import { ProductsCategory } from '../../types/products-type.enum'
 import { ProductsRepository } from '../../repositories/products.repository'
 import { ProductDbModel } from '../../types/product-db.model'
 
@@ -11,7 +11,7 @@ export class AddProductCommand {
   constructor(
     public name: string,
     public description: string,
-    public type: ProductsType,
+    public type: ProductsCategory,
     public price: number,
     public image: string | undefined,
     public isAvailable: boolean,
@@ -33,7 +33,7 @@ export class AddProductCommandHandler implements ICommandHandler {
     const newProduct: ProductDbModel = {
       name,
       description,
-      type,
+      category: type,
       price,
       image,
       isAvailable,

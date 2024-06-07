@@ -1,8 +1,8 @@
-import { ProductsType } from './products-type.enum'
+import { ProductsCategory } from './products-type.enum'
 
 export type ProductDbModel = {
   id?: string
-  type: ProductsType
+  category: ProductsCategory
   name: string
   description: string
   price: number

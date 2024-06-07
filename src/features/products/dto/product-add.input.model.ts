@@ -1,4 +1,4 @@
-import { ProductsType } from '../types/products-type.enum'
+import { ProductsCategory } from '../types/products-type.enum'
 import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
 import { IsBoolean, IsEnum, IsInt } from 'class-validator'
 
@@ -9,9 +9,9 @@ export class ProductAddInputModel {
   @IsValidString()
   description: string
 
-  @IsEnum(ProductsType)
+  @IsEnum(ProductsCategory)
   @IsValidString()
-  type: ProductsType
+  category: ProductsCategory
 
   @IsInt()
   price: number

@@ -12,7 +12,7 @@ export class ProductsQueryRepository {
 
   async getAll({
     term = '',
-    type,
+    category,
     limit = 5,
     offset = 0,
   }: GetAllProductsQueryParams): Promise<ProductViewModel[] | null> {
@@ -21,8 +21,8 @@ export class ProductsQueryRepository {
         name: ILike(`%${term}%`),
       }
 
-      if (type) {
-        whereCondition.type = type
+      if (category) {
+        whereCondition.category = category
       }
 
       const [products, total] = await this.productsOrmRepo.findAndCount({
@@ -60,7 +60,7 @@ export class ProductsQueryRepository {
   mapToView(product: Product): ProductViewModel {
     return {
       id: product.id,
-      type: product.type,
+      category: product.category,
       name: product.name,
       description: product.description,
       price: product.price,

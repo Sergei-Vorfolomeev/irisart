@@ -5,15 +5,15 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { ProductsType } from './types/products-type.enum'
+import { ProductsCategory } from './types/products-type.enum'
 
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({ enum: ProductsType })
-  type: ProductsType
+  @Column({ enum: ProductsCategory })
+  category: ProductsCategory
 
   @Column()
   name: string

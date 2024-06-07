@@ -1,4 +1,4 @@
-export enum ProductsType {
+export enum ProductsCategory {
   painting = 'painting',
   ceramics = 'ceramics',
 }
