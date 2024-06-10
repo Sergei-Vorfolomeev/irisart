@@ -1,0 +1,54 @@
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
+import { ProductsRepository } from '../../repositories/products.repository'
+import {
+  InterLayerObject,
+  StatusCode,
+} from '../../../../base/interlayer-object'
+import { ProductInputModel } from '../../dto/product.input.model'
+import { ProductDbModel } from '../../types/product-db.model'
+
+export class UpdateProductCommand {
+  constructor(
+    public productId: string,
+    public product: ProductInputModel,
+  ) {}
+}
+
+@CommandHandler(UpdateProductCommand)
+export class UpdateProductCommandHandler implements ICommandHandler {
+  constructor(private readonly productsRepository: ProductsRepository) {}
+
+  async execute({
+    productId,
+    product,
+  }: UpdateProductCommand): Promise<InterLayerObject> {
+    const { name, description, category, price, image, isAvailable } = product
+
+    const productExists = await this.productsRepository.getById(productId)
+    if (!productExists) {
+      return new InterLayerObject(
+        StatusCode.NotFound,
+        'Товар с указанным id не найден',
+      )
+    }
+
+    const editedProduct: ProductDbModel = {
+      id: productExists.id,
+      name,
+      description,
+      category,
+      price,
+      image,
+      isAvailable,
+    }
+    const updatedProduct =
+      await this.productsRepository.saveProduct(editedProduct)
+    if (!updatedProduct) {
+      return new InterLayerObject(
+        StatusCode.ServerError,
+        'Ошибка обновления товара',
+      )
+    }
+    return new InterLayerObject(StatusCode.NoContent)
+  }
+}

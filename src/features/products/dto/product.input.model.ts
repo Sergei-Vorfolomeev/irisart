@@ -1,8 +1,9 @@
 import { ProductsCategory } from '../types/products-type.enum'
 import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
 import { IsBoolean, IsEnum, IsInt } from 'class-validator'
+import { Transform } from 'class-transformer'
 
-export class ProductAddInputModel {
+export class ProductInputModel {
   @IsValidString()
   name: string
 
@@ -14,6 +15,7 @@ export class ProductAddInputModel {
   category: ProductsCategory
 
   @IsInt()
+  @Transform(({ value }) => Number(value))
   price: number
 
   @IsBoolean()
