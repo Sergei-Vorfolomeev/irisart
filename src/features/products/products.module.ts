@@ -9,11 +9,13 @@ import { ProductsQueryRepository } from './repositories/products.query.repositor
 import { CqrsModule } from '@nestjs/cqrs'
 import { GetAllProductsQueryHandler } from './usecases/queries/get-all-products.query'
 import { DeleteProductCommandHandler } from './usecases/commands/delete-product.command'
+import { UpdateProductCommandHandler } from './usecases/commands/update-product.command'
 
 const productsUseCases = [
   GetAllProductsQueryHandler,
   GetProductByIdQueryHandler,
   AddProductCommandHandler,
+  UpdateProductCommandHandler,
   DeleteProductCommandHandler,
 ]
 

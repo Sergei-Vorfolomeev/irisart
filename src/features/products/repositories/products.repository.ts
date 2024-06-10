@@ -32,7 +32,7 @@ export class ProductsRepository {
     }
   }
 
-  async addProduct(product: ProductDbModel): Promise<Product | null> {
+  async saveProduct(product: ProductDbModel): Promise<Product | null> {
     try {
       return await this.productsOrmRepo.save(product)
     } catch (e) {

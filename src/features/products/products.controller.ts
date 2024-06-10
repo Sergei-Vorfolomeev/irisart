@@ -6,9 +6,10 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common'
-import { ProductAddInputModel } from './dto/product-add.input.model'
+import { ProductInputModel } from './dto/product.input.model'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { handleExceptions } from '../../base/utils/handle-exceptions'
 import { AddProductCommand } from './usecases/commands/add-product.command'
@@ -16,6 +17,7 @@ import { GetProductByIdQuery } from './usecases/queries/get-product-by-id.query'
 import { GetAllProductsQuery } from './usecases/queries/get-all-products.query'
 import { GetAllProductsQueryParams } from './dto/get-all-products-query-params'
 import { DeleteProductCommand } from './usecases/commands/delete-product.command'
+import { UpdateProductCommand } from './usecases/commands/update-product.command'
 
 @Controller('products')
 export class ProductsController {
@@ -41,16 +43,8 @@ export class ProductsController {
 
   @Post()
   @HttpCode(201)
-  async addProduct(@Body() product: ProductAddInputModel) {
-    const { name, description, category, price, image, isAvailable } = product
-    const command = new AddProductCommand(
-      name,
-      description,
-      category,
-      price,
-      image,
-      isAvailable,
-    )
+  async addProduct(@Body() product: ProductInputModel) {
+    const command = new AddProductCommand(product)
     const {
       statusCode: code1,
       error: err1,
@@ -66,6 +60,17 @@ export class ProductsController {
     } = await this.queryBus.execute(query)
     handleExceptions(code2, err2)
     return createdProduct
+  }
+
+  @Put(':id')
+  @HttpCode(204)
+  async updateProduct(
+    @Param('id') productId: string,
+    @Body() product: ProductInputModel,
+  ) {
+    const command = new UpdateProductCommand(productId, product)
+    const { statusCode, error } = await this.commandBus.execute(command)
+    handleExceptions(statusCode, error)
   }
 
   @Delete(':id')

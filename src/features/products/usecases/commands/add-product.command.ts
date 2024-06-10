@@ -3,19 +3,12 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { ProductsCategory } from '../../types/products-type.enum'
 import { ProductsRepository } from '../../repositories/products.repository'
 import { ProductDbModel } from '../../types/product-db.model'
+import { ProductInputModel } from '../../dto/product.input.model'
 
 export class AddProductCommand {
-  constructor(
-    public name: string,
-    public description: string,
-    public type: ProductsCategory,
-    public price: number,
-    public image: string | undefined,
-    public isAvailable: boolean,
-  ) {}
+  constructor(public product: ProductInputModel) {}
 }
 
 @CommandHandler(AddProductCommand)
@@ -23,13 +16,16 @@ export class AddProductCommandHandler implements ICommandHandler {
   constructor(private readonly productsRepository: ProductsRepository) {}
 
   async execute({
-    name,
-    description,
-    type,
-    price,
-    image,
-    isAvailable,
+    product,
   }: AddProductCommand): Promise<InterLayerObject<string>> {
+    const {
+      name,
+      description,
+      category: type,
+      price,
+      image,
+      isAvailable,
+    } = product
     const newProduct: ProductDbModel = {
       name,
       description,
@@ -38,7 +34,7 @@ export class AddProductCommandHandler implements ICommandHandler {
       image,
       isAvailable,
     }
-    const createdProduct = await this.productsRepository.addProduct(newProduct)
+    const createdProduct = await this.productsRepository.saveProduct(newProduct)
     if (!createdProduct) {
       return new InterLayerObject(
         StatusCode.ServerError,
