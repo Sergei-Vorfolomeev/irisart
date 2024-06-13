@@ -28,7 +28,7 @@ export class Product {
   image: string
 
   @Column({ default: false })
-  isAvailable: boolean
+  inStock: boolean
 
   @CreateDateColumn()
   created_at: Date

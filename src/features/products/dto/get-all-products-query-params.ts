@@ -1,7 +1,7 @@
 import { ProductsCategory } from '../types/products-type.enum'
 import { IsValidString } from '../../../infrastructure/decorators/is-valid-string.decorator'
-import { IsEnum, IsInt, IsOptional } from 'class-validator'
-import { Type } from 'class-transformer'
+import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator'
+import { Transform, Type } from 'class-transformer'
 
 export class GetAllProductsQueryParams {
   @IsValidString()
@@ -21,4 +21,9 @@ export class GetAllProductsQueryParams {
   @IsOptional()
   @Type(() => Number)
   offset?: number
+
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => value === 'true')
+  inStock?: boolean
 }

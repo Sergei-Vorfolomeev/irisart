@@ -7,7 +7,7 @@ export type ProductDbModel = {
   description: string
   price: number
   image?: string
-  isAvailable: boolean
+  inStock: boolean
   created_at?: Date
   updated_at?: Date
 }

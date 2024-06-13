@@ -13,6 +13,7 @@ export class GetAllProductsQuery {
     public category?: ProductsCategory,
     public offset?: number,
     public limit?: number,
+    public inStock?: boolean,
   ) {}
 }
 

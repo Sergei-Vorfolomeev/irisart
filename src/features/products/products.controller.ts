@@ -29,9 +29,16 @@ export class ProductsController {
   @Get()
   @HttpCode(200)
   async getAllProducts(
-    @Query() { term, category, offset, limit }: GetAllProductsQueryParams,
+    @Query()
+    { term, category, offset, limit, inStock }: GetAllProductsQueryParams,
   ) {
-    const query = new GetAllProductsQuery(term, category, offset, limit)
+    const query = new GetAllProductsQuery(
+      term,
+      category,
+      offset,
+      limit,
+      inStock,
+    )
     const {
       statusCode,
       error,

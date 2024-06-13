@@ -22,7 +22,7 @@ export class UpdateProductCommandHandler implements ICommandHandler {
     productId,
     product,
   }: UpdateProductCommand): Promise<InterLayerObject> {
-    const { name, description, category, price, image, isAvailable } = product
+    const { name, description, category, price, image, inStock } = product
 
     const productExists = await this.productsRepository.getById(productId)
     if (!productExists) {
@@ -39,7 +39,7 @@ export class UpdateProductCommandHandler implements ICommandHandler {
       category,
       price,
       image,
-      isAvailable,
+      inStock: inStock,
     }
     const updatedProduct =
       await this.productsRepository.saveProduct(editedProduct)
