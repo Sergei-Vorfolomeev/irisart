@@ -18,21 +18,14 @@ export class AddProductCommandHandler implements ICommandHandler {
   async execute({
     product,
   }: AddProductCommand): Promise<InterLayerObject<string>> {
-    const {
-      name,
-      description,
-      category: type,
-      price,
-      image,
-      isAvailable,
-    } = product
+    const { name, description, category: type, price, image, inStock } = product
     const newProduct: ProductDbModel = {
       name,
       description,
       category: type,
       price,
       image,
-      isAvailable,
+      inStock: inStock,
     }
     const createdProduct = await this.productsRepository.saveProduct(newProduct)
     if (!createdProduct) {

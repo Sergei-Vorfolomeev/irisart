@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common'
 import { ProductInputModel } from './dto/product.input.model'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
@@ -18,6 +19,7 @@ import { GetAllProductsQuery } from './usecases/queries/get-all-products.query'
 import { GetAllProductsQueryParams } from './dto/get-all-products-query-params'
 import { DeleteProductCommand } from './usecases/commands/delete-product.command'
 import { UpdateProductCommand } from './usecases/commands/update-product.command'
+import { RolesGuard } from '../../infrastructure/guards/roles.guard'
 
 @Controller('products')
 export class ProductsController {
@@ -29,9 +31,16 @@ export class ProductsController {
   @Get()
   @HttpCode(200)
   async getAllProducts(
-    @Query() { term, category, offset, limit }: GetAllProductsQueryParams,
+    @Query()
+    { term, category, offset, limit, inStock }: GetAllProductsQueryParams,
   ) {
-    const query = new GetAllProductsQuery(term, category, offset, limit)
+    const query = new GetAllProductsQuery(
+      term,
+      category,
+      offset,
+      limit,
+      inStock,
+    )
     const {
       statusCode,
       error,
@@ -43,6 +52,7 @@ export class ProductsController {
 
   @Post()
   @HttpCode(201)
+  @UseGuards(RolesGuard)
   async addProduct(@Body() product: ProductInputModel) {
     const command = new AddProductCommand(product)
     const {

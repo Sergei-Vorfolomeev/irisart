@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
+import { BcryptAdapter } from '../../../../base/adapters/bcrypt/bcrypt.adapter'
 import { UsersRepository } from '../../repositories/users.repository'
 import {
   InterLayerObject,
@@ -7,7 +7,7 @@ import {
 } from '../../../../base/interlayer-object'
 import { Roles } from '../../types/roles.enum'
 import { User } from '../../entities/user.entity'
-import { EmailConfirmation } from '../../entities/email-confirmation'
+import { EmailConfirmation } from '../../entities/email-confirmation.entity'
 
 export class CreateUserCommand {
   constructor(
@@ -55,7 +55,7 @@ export class CreateUserCommandHandler
     newUser.role = role
 
     const newEmailConfirmation = new EmailConfirmation()
-    newEmailConfirmation.user = newUser
+    newUser.emailConfirmation = newEmailConfirmation
     newEmailConfirmation.isConfirmed = true
 
     const savedUser = await this.usersRepository.save(newUser)

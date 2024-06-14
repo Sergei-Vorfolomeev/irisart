@@ -1,4 +1,4 @@
-import { EmailAdapter } from '../../src/base/adapters/email.adapter'
+import { EmailAdapter } from '../../src/base/adapters/node-mailer/email.adapter'
 import { SentMessageInfo } from 'nodemailer'
 import { ConfigService } from '@nestjs/config'
 import { ConfigType } from '../../src/settings/configuration'

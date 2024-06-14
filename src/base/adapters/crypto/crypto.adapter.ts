@@ -1,6 +1,6 @@
 import * as crypto from 'crypto'
 import { Injectable } from '@nestjs/common'
-import { ConfigType } from '../../settings/configuration'
+import { ConfigType } from '../../../settings/configuration'
 import { ConfigService } from '@nestjs/config'
 
 @Injectable()

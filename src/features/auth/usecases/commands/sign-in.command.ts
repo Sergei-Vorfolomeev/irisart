@@ -4,8 +4,8 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../../users/repositories/users.repository'
-import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
-import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
+import { BcryptAdapter } from '../../../../base/adapters/bcrypt/bcrypt.adapter'
+import { JwtAdapter } from '../../../../base/adapters/jwt/jwt.adapter'
 import { TokensPayload } from '../../types/tokens-payload.type'
 
 export class SignInCommand {

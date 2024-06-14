@@ -5,7 +5,7 @@ import {
   StatusCode,
 } from '../../../../base/interlayer-object'
 import { TokensPayload } from '../../types/tokens-payload.type'
-import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
+import { JwtAdapter } from '../../../../base/adapters/jwt/jwt.adapter'
 
 export class UpdateTokensCommand {
   constructor(public refreshToken: string) {}

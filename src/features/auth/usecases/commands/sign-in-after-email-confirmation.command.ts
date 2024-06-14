@@ -5,7 +5,7 @@ import {
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../../users/repositories/users.repository'
 import { TokensPayload } from '../../types/tokens-payload.type'
-import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
+import { JwtAdapter } from '../../../../base/adapters/jwt/jwt.adapter'
 
 export class SignInAfterEmailConfirmationCommand {
   constructor(public email: string) {}

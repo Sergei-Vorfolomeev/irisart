@@ -19,7 +19,7 @@ export class ProductInputModel {
   price: number
 
   @IsBoolean()
-  isAvailable: boolean
+  inStock: boolean
 
   image?: string
 }

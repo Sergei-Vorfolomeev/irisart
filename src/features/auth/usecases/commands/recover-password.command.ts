@@ -5,7 +5,7 @@ import {
 } from '../../../../base/interlayer-object'
 import { UsersRepository } from '../../../users/repositories/users.repository'
 import { randomUUID } from 'crypto'
-import { EmailAdapter } from '../../../../base/adapters/email.adapter'
+import { EmailAdapter } from '../../../../base/adapters/node-mailer/email.adapter'
 import { templateForPasswordRecovery } from '../../../../base/utils/template-for-password-recovery'
 import { PasswordRecovery } from '../../../users/entities/password-recovery.entity'
 import { add } from 'date-fns/add'

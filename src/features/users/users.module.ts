@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { UsersController } from './users.controller'
 import { User } from './entities/user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { BcryptAdapter } from '../../base/adapters/bcrypt.adapter'
 import { CreateUserCommandHandler } from './usecases/commands/create-user.command'
 import { UsersRepository } from './repositories/users.repository'
 import { CqrsModule } from '@nestjs/cqrs'
@@ -16,8 +15,9 @@ import { GetBannedUsersQueryHandler } from './usecases/queries/get-banned-users.
 import { GetBannedUserByIdQueryHandler } from './usecases/queries/get-banned-user-by-id.query'
 import { GetUserByIdQueryHandler } from './usecases/queries/get-user-by-id.query'
 import { Mapper } from '../../base/utils/mapper'
-import { EmailConfirmation } from './entities/email-confirmation'
+import { EmailConfirmation } from './entities/email-confirmation.entity'
 import { PasswordRecovery } from './entities/password-recovery.entity'
+import { BcryptModule } from '../../base/adapters/bcrypt/bcrypt.module'
 
 const usersUseCases = [
   GetUsersQueryHandler,
@@ -35,20 +35,10 @@ const usersUseCases = [
   imports: [
     TypeOrmModule.forFeature([User, Ban, EmailConfirmation, PasswordRecovery]),
     CqrsModule,
+    BcryptModule,
   ],
-  providers: [
-    ...usersUseCases,
-    BcryptAdapter,
-    UsersRepository,
-    UsersQueryRepository,
-    Mapper,
-  ],
+  providers: [...usersUseCases, UsersRepository, UsersQueryRepository, Mapper],
   controllers: [UsersController],
-  exports: [
-    TypeOrmModule,
-    UsersRepository,
-    UsersQueryRepository,
-    BcryptAdapter,
-  ],
+  exports: [TypeOrmModule, UsersRepository, UsersQueryRepository],
 })
 export class UsersModule {}

@@ -4,7 +4,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { BcryptAdapter } from '../../../../base/adapters/bcrypt.adapter'
+import { BcryptAdapter } from '../../../../base/adapters/bcrypt/bcrypt.adapter'
 
 export class SetNewPasswordCommand {
   constructor(

@@ -7,7 +7,7 @@ export type ProductViewModel = {
   description: string
   price: number
   image?: string
-  isAvailable: boolean
+  inStock: boolean
   createdAt: Date
   updatedAt: Date
 }

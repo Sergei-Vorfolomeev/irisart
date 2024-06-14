@@ -13,8 +13,9 @@ export class ProductsQueryRepository {
   async getAll({
     term = '',
     category,
-    limit = 5,
+    limit = 10,
     offset = 0,
+    inStock,
   }: GetAllProductsQueryParams): Promise<ProductViewModel[] | null> {
     try {
       const whereCondition: any = {
@@ -23,6 +24,9 @@ export class ProductsQueryRepository {
 
       if (category) {
         whereCondition.category = category
+      }
+      if (inStock !== undefined) {
+        whereCondition.isAvailable = inStock
       }
 
       const [products, total] = await this.productsOrmRepo.findAndCount({
@@ -65,7 +69,7 @@ export class ProductsQueryRepository {
       description: product.description,
       price: product.price,
       image: product.image,
-      isAvailable: product.isAvailable,
+      inStock: product.inStock,
       createdAt: product.created_at,
       updatedAt: product.updated_at,
     }

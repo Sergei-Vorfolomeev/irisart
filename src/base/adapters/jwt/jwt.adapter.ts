@@ -1,10 +1,10 @@
 import * as jwt from 'jsonwebtoken'
 import { Injectable } from '@nestjs/common'
-import { UsersRepository } from '../../features/users/repositories/users.repository'
-import { ConfigType } from '../../settings/configuration'
-import { CryptoAdapter } from './crypto.adapter'
-import { TokensPayload } from '../../features/auth/types/tokens-payload.type'
-import { User } from '../../features/users/entities/user.entity'
+import { UsersRepository } from '../../../features/users/repositories/users.repository'
+import { ConfigType } from '../../../settings/configuration'
+import { CryptoAdapter } from '../crypto/crypto.adapter'
+import { TokensPayload } from '../../../features/auth/types/tokens-payload.type'
+import { User } from '../../../features/users/entities/user.entity'
 import { ConfigService } from '@nestjs/config'
 
 @Injectable()

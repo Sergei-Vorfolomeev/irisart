@@ -4,7 +4,7 @@ import configuration, { ConfigType } from '../../src/settings/configuration'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { applyAppSettings } from '../apply-app-settings'
 import { dropDb } from './drop-db'
-import { EmailAdapter } from '../../src/base/adapters/email.adapter'
+import { EmailAdapter } from '../../src/base/adapters/node-mailer/email.adapter'
 import { EmailAdapterMock } from '../mocks/email.adapter.mock'
 
 export const initTestSettings = async (
