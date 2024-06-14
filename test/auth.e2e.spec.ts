@@ -6,6 +6,10 @@ import { UsersModule } from '../src/features/users/users.module'
 import { dropDb } from './utils/drop-db'
 import { AuthModule } from '../src/features/auth/auth.module'
 import { UsersRepository } from '../src/features/users/repositories/users.repository'
+import { BcryptModule } from '../src/base/adapters/bcrypt/bcrypt.module'
+import { JwtModule } from '../src/base/adapters/jwt/jwt.module'
+import { NodeMailerModule } from '../src/base/adapters/node-mailer/node-mailer.module'
+import { CryptoModule } from '../src/base/adapters/crypto/crypto.module'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
@@ -13,7 +17,16 @@ describe('AuthController (e2e)', () => {
   let usersRepository: UsersRepository
 
   beforeAll(async () => {
-    const res = await initTestSettings(app, httpServer, UsersModule, AuthModule)
+    const res = await initTestSettings(
+      app,
+      httpServer,
+      UsersModule,
+      AuthModule,
+      BcryptModule,
+      JwtModule,
+      NodeMailerModule,
+      CryptoModule,
+    )
     app = res.app
     httpServer = res.httpServer
     usersRepository = app.get(UsersRepository)
@@ -114,9 +127,12 @@ describe('AuthController (e2e)', () => {
       .expect(200)
 
     expect(body).toEqual({
-      email: 'test@gmail.com',
+      id: expect.any(String),
       userName: 'test',
-      userId: expect.any(String),
+      email: 'test@gmail.com',
+      role: 'user',
+      banStatus: false,
+      createdAt: expect.any(String),
     })
   })
 
