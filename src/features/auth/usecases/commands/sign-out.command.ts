@@ -3,7 +3,7 @@ import {
   InterLayerObject,
   StatusCode,
 } from '../../../../base/interlayer-object'
-import { JwtAdapter } from '../../../../base/adapters/jwt.adapter'
+import { JwtAdapter } from '../../../../base/adapters/jwt/jwt.adapter'
 import { UsersRepository } from '../../../users/repositories/users.repository'
 
 export class SignOutCommand {

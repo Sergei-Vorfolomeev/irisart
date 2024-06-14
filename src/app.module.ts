@@ -5,6 +5,7 @@ import { UsersModule } from './features/users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthModule } from './features/auth/auth.module'
 import { ProductsModule } from './features/products/products.module'
+import { JwtModule } from './base/adapters/jwt/jwt.module'
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { ProductsModule } from './features/products/products.module'
         synchronize: true,
       }),
     }),
-    UsersModule,
+    JwtModule,
     AuthModule,
     ProductsModule,
   ],

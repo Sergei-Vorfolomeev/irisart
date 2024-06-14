@@ -6,7 +6,7 @@ import {
 import { UsersRepository } from '../../../users/repositories/users.repository'
 import { randomUUID } from 'crypto'
 import { add } from 'date-fns/add'
-import { EmailAdapter } from '../../../../base/adapters/email.adapter'
+import { EmailAdapter } from '../../../../base/adapters/node-mailer/email.adapter'
 import { templateForRegistration } from '../../../../base/utils/template-for-registration'
 import { generateRandomFourDigitNumber } from '../../../../base/utils/generate-random-code'
 

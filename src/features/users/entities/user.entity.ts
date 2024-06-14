@@ -8,7 +8,7 @@ import {
 } from 'typeorm'
 import { Roles } from '../types/roles.enum'
 import { Ban } from './ban.entity'
-import { EmailConfirmation } from './email-confirmation'
+import { EmailConfirmation } from './email-confirmation.entity'
 import { PasswordRecovery } from './password-recovery.entity'
 
 @Entity('users')

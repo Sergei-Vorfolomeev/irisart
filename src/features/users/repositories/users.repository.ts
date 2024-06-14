@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity'
 import { EmailConfirmationType } from '../types/user-db.model'
 import { Injectable } from '@nestjs/common'
 import { Ban } from '../entities/ban.entity'
-import { EmailConfirmation } from '../entities/email-confirmation'
+import { EmailConfirmation } from '../entities/email-confirmation.entity'
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {

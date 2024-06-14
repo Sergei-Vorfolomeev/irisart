@@ -1,5 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import * as cookieParser from 'cookie-parser'
+import { AuthGuard } from '../src/infrastructure/guards/auth.guard'
 
 const APP_PREFIX = '/api'
 

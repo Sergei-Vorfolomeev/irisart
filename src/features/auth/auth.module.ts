@@ -3,9 +3,7 @@ import { UsersModule } from '../users/users.module'
 import { CqrsModule } from '@nestjs/cqrs'
 import { AuthController } from './auth.controller'
 import { SignUpCommandHandler } from './usecases/commands/sign-up.command'
-import { EmailAdapter } from '../../base/adapters/email.adapter'
-import { CryptoAdapter } from '../../base/adapters/crypto.adapter'
-import { JwtAdapter } from '../../base/adapters/jwt.adapter'
+import { EmailAdapter } from '../../base/adapters/node-mailer/email.adapter'
 import { SignInCommandHandler } from './usecases/commands/sign-in.command'
 import { ConfirmEmailCommandHandler } from './usecases/commands/confirm-email.command'
 import { ResendCodeCommandHandler } from './usecases/commands/resend-code.command'
@@ -15,6 +13,10 @@ import { SetNewPasswordCommandHandler } from './usecases/commands/set-new-passwo
 import { UpdateTokensCommandHandler } from './usecases/commands/update-tokens.command'
 import { SignInAfterEmailConfirmationCommandHandler } from './usecases/commands/sign-in-after-email-confirmation.command'
 import { MeQueryHandler } from './usecases/queries/me.query'
+import { CryptoModule } from '../../base/adapters/crypto/crypto.module'
+import { JwtModule } from '../../base/adapters/jwt/jwt.module'
+import { BcryptModule } from '../../base/adapters/bcrypt/bcrypt.module'
+import { NodeMailerModule } from '../../base/adapters/node-mailer/node-mailer.module'
 
 const authUseCases = [
   SignUpCommandHandler,
@@ -30,8 +32,14 @@ const authUseCases = [
 ]
 
 @Module({
-  imports: [CqrsModule, UsersModule],
-  providers: [...authUseCases, EmailAdapter, JwtAdapter, CryptoAdapter],
+  imports: [
+    CqrsModule,
+    UsersModule,
+    CryptoModule,
+    BcryptModule,
+    NodeMailerModule,
+  ],
+  providers: [...authUseCases],
   controllers: [AuthController],
   exports: [],
 })
